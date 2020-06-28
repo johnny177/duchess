@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/small_margin"
+    android:layout_margin="@dimen/smaller_margin">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/smaller_margin"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_margin="@dimen/smaller_margin"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/course_id"
+                    android:layout_width="wrap_content"
+                    android:layout_margin="@dimen/smaller_margin"
+                    android:text="Dummy ID"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed-medium"
+                    android:textAppearance="?android:textAppearanceLarge"
+                    android:textColor="#2B3D4D"/>
+                <TextView
+                    android:id="@+id/course_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/smaller_margin"
+                    android:fontFamily="sans-serif"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="#AEB6BD"/>
+                <TextView
+                    android:id="@+id/course_topic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:layout_margin="@dimen/smaller_margin"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/colorPrimary"/>
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/smaller_margin"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/schedule_is_done"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerInside"
+                    android:layout_margin="@dimen/smallest_padding"
+                    android:src="@drawable/checked_64"
+                    android:contentDescription="@string/image_to_check_if_schedule_is_done"/>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/smaller_margin"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/schedule_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_baseline_calendar_today_24"
+                android:textAppearance="?android:textAppearanceMediumInverse"
+                android:textColor="#AEB6BD"
+                android:fontFamily="sans-serif-condensed"
+                android:layout_margin="@dimen/smaller_margin"/>
+
+            <TextView
+                android:id="@+id/schedule_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_clock"
+                android:textAppearance="?android:textAppearanceMediumInverse"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#AEB6BD"
+                android:layout_margin="@dimen/smaller_margin"/>
+            <TextView
+                android:id="@+id/schedule_interval"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_repeat"
+                android:fontFamily="sans-serif-condensed"
+                android:textAppearance="?android:textAppearanceMediumInverse"
+                android:textColor="#AEB6BD"
+                android:layout_margin="8dp"/>
+
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

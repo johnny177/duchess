@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Repeat Alarm Interval Array-->
+    <string-array name="alarm_repeat_interval_options">
+        <item>@string/not_repeating</item>
+        <item>@string/daily</item>
+        <item>@string/weekly</item>
+        <item>@string/monthly</item>
+    </string-array>
+</resources>

@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">Duchess</string>
+    <string name="alarm">Alarm</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="choose_alarm_type">Choose Alarm Type</string>
+    <string name="reminders">Reminders</string>
+    <string name="schedule">Schedule</string>
+    <string name="title_activity_reminder">ReminderActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="add_schedule">Add Schedule</string>
+    <string name="add_reminder">Add Reminder</string>
+    <string name="opens_the_editor_activity">Opens the editor activity</string>
+    <string name="overview">Overview</string>
+    <string name="course_id_eg_econ_312">Course ID Eg: ECON 312</string>
+    <string name="course_name_eg_microeconomics">Course Name Eg: Microeconomics</string>
+    <string name="topic_eg_demand">Topic Eg: Demand</string>
+    <string name="when_to_study">When To Study</string>
+    <string name="time">Time</string>
+    <string name="date">Date</string>
+    <string name="repeat">Repeat</string>
+    <string name="done">Alarm Done</string>
+    <string name="note">Note</string>
+    <string name="thing_to_note">Thing to note</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="insert_dummy_data">Insert Dummy Data</string>
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+    <string name="delete_dialog_msg">Delete this Schedule?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="editor_delete_schedule_successful">Delete schedule successful</string>
+    <string name="editor_delete_schedule_unsuccessful">Delete schedule unsuccessful</string>
+    <string name="not_repeating">Not Repeating</string>
+    <string name="daily">Daily</string>
+    <string name="monthly">Monthly</string>
+    <string name="weekly">Weekly</string>
+    <string name="add_a_schedule">Add a schedule</string>
+    <string name="schedule_update_successful">Schedule Updated Successfully</string>
+    <string name="schedule_update_failed">Schedule Update Failed</string>
+    <string name="schedule_saved">Schedule Saved</string>
+    <string name="image_to_check_if_scedule_is_repeating">Image to check if scedule is repeating</string>
+    <string name="image_to_check_if_schedule_is_done">image to check if schedule is done</string>
+    <string name="you_may_delay_but_time_will_not">You may delay, but time will not.</string>
+    <string name="get_started_by_adding_a_schedule">Get started by adding a schedule</string>
+</resources>
