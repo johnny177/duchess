@@ -1,4 +1,4 @@
-package com.nnoboa.duchess.controllers;
+package com.nnoboa.duchess.controllers.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -14,8 +14,8 @@ import com.nnoboa.duchess.data.AlarmContract;
 import com.nnoboa.duchess.R.drawable;
 
 public class ScheduleCursorAdapter extends CursorAdapter {
-    public ScheduleCursorAdapter(Context context, Cursor c, boolean autoRequery) {
-        super(context, c, autoRequery);
+    public ScheduleCursorAdapter(Context context, Cursor c) {
+        super(context, c, 0);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class ScheduleCursorAdapter extends CursorAdapter {
         ImageView isDoneImage = view.findViewById(R.id.schedule_is_done);
 
 
-        //get the columnInddex from database
+        //get the columnIndex from database
         int courseIDColumnIndex = cursor.getColumnIndexOrThrow(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID);
         int courseNameColumnIndex = cursor.getColumnIndex(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME);
         int courseTopicColumnIndex = cursor.getColumnIndexOrThrow(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC);
@@ -63,7 +63,6 @@ public class ScheduleCursorAdapter extends CursorAdapter {
                 isDoneImage.setImageResource(drawable.checked_64);
                 break;
             case ScheduleEntry.NOT_DONE:
-                isDoneImage.setImageResource(R.drawable.ic_not_done);
                 break;
         }
 

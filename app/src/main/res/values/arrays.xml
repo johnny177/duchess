@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--Repeat Alarm Interval Array-->
-    <string-array name="alarm_repeat_interval_options">
+    <!--Repeat Schedule Interval Array-->
+    <string-array name="schedule_repeat_interval_options">
         <item>@string/not_repeating</item>
         <item>@string/daily</item>
         <item>@string/weekly</item>
         <item>@string/monthly</item>
+    </string-array>
+
+    <!--Repeat Reminders Interval Array-->
+    <string-array name="reminders_repeat_intervals">
+        <item>Once</item>
+        <item>@string/daily</item>
+        <item>@string/in_every_3_days</item>
+        <item>@string/weekly</item>
+    </string-array>
+
+    <!--Reminder type Array-->
+    <string-array name="reminder_type">
+        <item>@string/lectures</item>
+        <item>@string/project</item>
+        <item>@string/assignment</item>
+        <item>@string/quiz</item>
+        <item>@string/interim_assessment</item>
+        <item>@string/exam</item>
+        <item>@string/other</item>
     </string-array>
 </resources>

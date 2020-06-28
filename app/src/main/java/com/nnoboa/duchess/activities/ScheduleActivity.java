@@ -3,15 +3,12 @@ package com.nnoboa.duchess.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,19 +17,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.nnoboa.duchess.R;
-import com.nnoboa.duchess.controllers.ScheduleCursorAdapter;
+import com.nnoboa.duchess.activities.editors.ScheduleEditorActivity;
+import com.nnoboa.duchess.controllers.adapters.ScheduleCursorAdapter;
 import com.nnoboa.duchess.data.AlarmContract;
-import com.nnoboa.duchess.data.AlarmDbHelper;
 
 public class ScheduleActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     ExtendedFloatingActionButton addSchedule;
-    TextView displayText;
+//    TextView displayText;
     android.app.LoaderManager loaderManager;
     ListView scheduleList;
     ScheduleCursorAdapter scheduleCursorAdapter;
@@ -49,7 +44,7 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
 
         loaderManager = getLoaderManager();
 
-        scheduleCursorAdapter = new ScheduleCursorAdapter(this,null,true);
+
 
 
         findViews();
@@ -57,15 +52,11 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
         startEditorIntent();
         scheduleList.setEmptyView(emptyView);
         scheduleList.setAdapter(scheduleCursorAdapter);
-        scheduleList.setDivider(null);
-        if(scheduleList.getCount() != 0){
-            addSchedule.shrink();
-        }
+
         scheduleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editScheduleIntent = new Intent(ScheduleActivity.this, EditorActivity.class);
-
+                Intent editScheduleIntent = new Intent(ScheduleActivity.this, ScheduleEditorActivity.class);
 
                 Uri currentScheduleUri = ContentUris.withAppendedId(AlarmContract.ScheduleEntry.CONTENT_URI,id);
 
@@ -80,6 +71,8 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
     }
 
 
+    //-------------------------Custom Methods-------------------------------------------------------
+
     /**
      * Find the respective views
      */
@@ -88,6 +81,7 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
         addSchedule = findViewById(R.id.add_schedule);
         scheduleList = findViewById(R.id.schedule_list);
         emptyView = findViewById(R.id.empty_view);
+        scheduleCursorAdapter = new ScheduleCursorAdapter(this, null);
 //        displayText = findViewById(R.id.tem_textView);
     }
 
@@ -100,34 +94,13 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
         addSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editorIntent = new Intent(ScheduleActivity.this, EditorActivity.class);
+                Intent editorIntent = new Intent(ScheduleActivity.this, ScheduleEditorActivity.class);
                 startActivity(editorIntent);
             }
         });
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_schedule,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        switch (item.getItemId()){
-            case R.id.action_delete_all_schedules:
-                deleteAllSchedules();
-                return true;
-
-            case R.id.insert_dummy_data:
-                insertSchedule();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private void insertSchedule() {
         ContentValues values = new ContentValues();
@@ -143,8 +116,18 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
 
         Log.d("Dummy Data", ""+rowID);
 
-        Toast.makeText(getApplicationContext(), "Inserted "+rowID,Toast.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(), "Inserted "+rowID,Toast.LENGTH_LONG).show();
     }
+
+
+    /**
+     * Helper method to delete all schedules in the database.
+     */
+    private void deleteAllSchedules() {
+        int rowsDeleted = getContentResolver().delete(AlarmContract.ScheduleEntry.CONTENT_URI, null, null);
+        Log.v("CatalogActivity", rowsDeleted + " rows deleted from schedule database");
+    }
+
 
 //    private void displayDatabaseInfo(){
 //
@@ -235,17 +218,12 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
 
 
 
-    /**
-     * Helper method to delete all pets in the database.
-     */
-    private void deleteAllSchedules() {
-        int rowsDeleted = getContentResolver().delete(AlarmContract.ScheduleEntry.CONTENT_URI, null, null);
-        Log.v("CatalogActivity", rowsDeleted + " rows deleted from schedule database");
-    }
+    //-----------------Loader Implemented Methods---------------------------------------------------
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
+                AlarmContract.ScheduleEntry._ID,
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID,
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME,
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC,
@@ -274,5 +252,28 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
     public void onLoaderReset(Loader<Cursor> loader) {
         scheduleCursorAdapter.swapCursor(null);
 
+    }
+
+//--------------------------Menu Options Inflater---------------------------------------------------
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_schedule,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.action_delete_all_schedules:
+                deleteAllSchedules();
+                return true;
+
+            case R.id.insert_dummy_data:
+                insertSchedule();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

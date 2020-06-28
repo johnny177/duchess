@@ -9,12 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.EditorActivity"
-            android:label="Add a Schedule"
-            android:parentActivityName=".activities.ScheduleActivity">
+        <activity android:name=".activities.editors.ReminderEditorActivity"
+            android:label="Add a Reminder"
+            android:parentActivityName=".activities.ReminderActivity">
         </activity>
-        <activity android:name=".activities.ScheduleActivity" />
-        <activity android:name=".activities.ReminderActivity" />
+        <activity
+            android:name=".activities.editors.ScheduleEditorActivity"
+            android:label="Add a Schedule"
+            android:parentActivityName=".activities.ScheduleActivity"></activity>
+        <activity android:name=".activities.ScheduleActivity"
+            android:label="Schedules"/>
+        <activity android:name=".activities.ReminderActivity"
+            android:label="Reminders"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,9 +30,9 @@
         </activity>
 
         <provider
-            android:authorities="com.nnoboa.duchess.schedules"
             android:name=".data.AlarmProvider"
-            android:exported="false"/>
+            android:authorities="com.nnoboa.duchess.schedules"
+            android:exported="false" />
     </application>
 
 </manifest>

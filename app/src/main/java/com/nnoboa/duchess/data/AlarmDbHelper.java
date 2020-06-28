@@ -5,6 +5,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import static com.nnoboa.duchess.data.AlarmContract.*;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_COURSE_ID;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_COURSE_NAME;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_LOCATION;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_NOTE;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_STATUS;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_TIME;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_TYPE;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.TABLE_NAME;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry._ID;
 
 public class AlarmDbHelper extends SQLiteOpenHelper {
 
@@ -14,24 +27,6 @@ public class AlarmDbHelper extends SQLiteOpenHelper {
     private static final String TEXT = " TEXT";
     private static final String INT = " INTEGER";
 
-    public static final String SQL_CREATE_SCHEDULE_DBT_ENTRIES =
-            "CREATE TABLE "+ ScheduleEntry.TABLE_NAME +
-                    " ("+
-                    ScheduleEntry.COLUMN_ID + INT+" PRIMARY KEY AUTOINCREMENT"+COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID+ TEXT+" NOT NULL" + COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME+ TEXT+COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_TOPIC+TEXT +" NOT NULL"+COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_TIME+TEXT+" NOT NULL"+COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_DATE+TEXT+" NOT NULL"+COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_REPEAT+" NOT NULL"+COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_INTERVAL+INT+" NOT NULL"+COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_NOTE+TEXT+COMMA+
-                    ScheduleEntry.COLUMN_SCHEDULE_DONE+INT+" NOT NULL DEFAULT "+ScheduleEntry.NOT_DONE+" )";
-
-
-
-
-
 
     public AlarmDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -40,6 +35,43 @@ public class AlarmDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        /**
+         * Schedules create database statement
+         */
+       String SQL_CREATE_SCHEDULE_DBT_ENTRIES =
+                "CREATE TABLE "+ ScheduleEntry.TABLE_NAME +
+                        " ("+
+                        ScheduleEntry._ID + INT+" PRIMARY KEY AUTOINCREMENT"+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID+ TEXT+" NOT NULL" + COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME+ TEXT+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_TOPIC+TEXT +" NOT NULL"+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_TIME+TEXT+" NOT NULL"+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_DATE+TEXT+" NOT NULL"+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_REPEAT+" NOT NULL"+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_INTERVAL+INT+" NOT NULL"+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_NOTE+TEXT+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_DONE+INT+" NOT NULL DEFAULT "+ScheduleEntry.NOT_DONE+" )";
+
+
+
+        String SQL_CREATE_REMINDER_TABLE = "CREATE TABLE "+ TABLE_NAME + " ("
+                + _ID +" INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_COURSE_ID +" TEXT NOT NULL, "
+                + COLUMN_COURSE_NAME+ " TEXT NOT NULL, "
+                + COLUMN_REMINDER_TYPE + " INTEGER NOT NULL, "
+                + COLUMN_REMINDER_TIME + " TEXT NOT NULL, "
+                + COLUMN_REMINDER_DATE + " TEXT NOT NULL, "
+                + COLUMN_REMINDER_LOCATION +" TEXT NOT NULL, "
+                + COLUMN_REMINDER_ONLINE_STATUS+ " INTEGER NOT NULL DEFAULT 301, "
+                + COLUMN_REMINDER_REPEAT + " INTEGER NOT NULL DEFAULT 400, "
+                + COLUMN_REMINDER_REPEAT_INTERVAL + " INTEGER NOT NULL DEFAULT 000, "
+                + COLUMN_REMINDER_STATUS + " INTEGER NOT NULL DEFAULT 0, "
+                + COLUMN_REMINDER_NOTE + " TEXT"
+                +" )";
+
+        //execute the SQL statement
+        db.execSQL(SQL_CREATE_REMINDER_TABLE);
         db.execSQL(SQL_CREATE_SCHEDULE_DBT_ENTRIES);
 
     }

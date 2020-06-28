@@ -64,7 +64,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/smaller_margin"
-        android:id="@+id/schedule_list"/>
+        android:id="@+id/schedule_list" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/add_schedule"

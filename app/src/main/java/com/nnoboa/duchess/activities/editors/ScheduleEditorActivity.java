@@ -1,8 +1,7 @@
-package com.nnoboa.duchess.activities;
+package com.nnoboa.duchess.activities.editors;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -35,7 +34,7 @@ import java.util.Objects;
 
 import static com.nnoboa.duchess.data.AlarmContract.*;
 
-public class EditorActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
+public class ScheduleEditorActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
     EditText nameEdit, idEdit, topicEdit, timeEdit, dateEdit, noteEdit;
     Spinner repeatSpinner;
@@ -64,7 +63,7 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editor);
+        setContentView(R.layout.activity_schedule_editor);
 
         Intent intent = getIntent();
 
@@ -77,7 +76,7 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
             getSupportActionBar().setTitle(" Add a schedule");
             doneCheck.setEnabled(false);
         } else {
-            getSupportActionBar().setTitle("Edit a Pet");
+            getSupportActionBar().setTitle("Edit  schedule");
             loaderManager.initLoader(SCHEDULE_LOADER_ID, null, this);
 
         }
@@ -160,6 +159,12 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
             contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_NOTE, courseNote);
         }
 
+        if(repeatSchedule == ScheduleEntry.REPEAT_OFF){
+            contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_INTERVAL,ScheduleEntry.SCHEDULE_NOT_REPEATING);
+        }else{
+            contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_INTERVAL, interval);
+        }
+
         if (currentScheduleUri == null &&
                 TextUtils.isEmpty(courseDate) &&
                 TextUtils.isEmpty(courseName) &&
@@ -172,7 +177,6 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
         }
 
         contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_REPEAT, repeatSchedule);
-        contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_INTERVAL, interval);
 
         contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_DONE, doneWithSchedule);
 
@@ -243,7 +247,7 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
     private void setupSpinner(){
 
         ArrayAdapter intervalSpinnerAdapter = ArrayAdapter.createFromResource(this,
-                R.array.alarm_repeat_interval_options, android.R.layout.simple_spinner_item);
+                R.array.schedule_repeat_interval_options, android.R.layout.simple_spinner_item);
 
         intervalSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
@@ -260,8 +264,9 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
                     interval = ScheduleEntry.SCHEDULE_REPEAT_WEEKLY;
                 }else if(selection.equals(getString(R.string.monthly))){
                     interval = ScheduleEntry.SCHEDULE_REPEAT_MONTHLY;
-                }}else{
+                }}else if (selection.equals(getString(R.string.not_repeating))){
                     interval = ScheduleEntry.SCHEDULE_NOT_REPEATING;
+                    repeatCheck.setChecked(false);
                 }
             }
 
@@ -309,6 +314,29 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
 
             case R.id.action_delete:
                 showDeleteConfirmationDialog();
+                return true;
+            // Respond to a click on the "Up" arrow button in the app bar
+            case android.R.id.home:
+                // If the pet hasn't changed, continue with navigating up to parent activity
+                // which is the {@link CatalogActivity}.
+                if (!mScheduleChanged) {
+                    NavUtils.navigateUpFromSameTask(ScheduleEditorActivity.this);
+                    return true;
+                }
+
+                // Otherwise if there are unsaved changes, setup a dialog to warn the user.
+                // Create a click listener to handle the user confirming that
+                // changes should be discarded.
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // User clicked "Discard" button, navigate to parent activity.
+                                NavUtils.navigateUpFromSameTask(ScheduleEditorActivity.this);
+                            }
+                        };
+                showUnsavedChangesDialog(discardButtonClickListener);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -326,6 +354,7 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String[] projection = {
+                ScheduleEntry._ID,
                 ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID,
                 ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME,
                 ScheduleEntry.COLUMN_SCHEDULE_TOPIC,
@@ -370,7 +399,7 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
             int currentDone = cursor.getInt(courseDoneColumnIndex);
             String currentNote = cursor.getString(courseNoteColumnIndex);
 
-            //update the view on the screen with values from the databas
+            //update the view on the screen with values from the database
             idEdit.setText(currentCourseId);
             nameEdit.setText(currentCourseName);
             topicEdit.setText(currentTopic);
@@ -378,11 +407,8 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
             dateEdit.setText(currentDate);
             noteEdit.setText(currentNote);
 
-            //interval is a dropdwon spinner so map the constat value from the database
+            //interval is a dropdown spinner so map the constant value from the database
             switch (currentInterval){
-                case ScheduleEntry.SCHEDULE_NOT_REPEATING:
-                    repeatSpinner.setSelection(0);
-                    break;
                 case ScheduleEntry.SCHEDULE_REPEAT_DAILY:
                     repeatSpinner.setSelection(1);
                     break;
@@ -392,22 +418,17 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
                 case ScheduleEntry.SCHEDULE_REPEAT_MONTHLY:
                     repeatSpinner.setSelection(3);
                     break;
+                case ScheduleEntry.SCHEDULE_NOT_REPEATING:
                 default:
                     repeatSpinner.setSelection(0);
                     break;
             }
 
             //the map the checkbox state with the value from the interval
-            switch (currentDone){
-                case ScheduleEntry.DONE:
-                    doneCheck.setChecked(true);
-                    break;
-                case ScheduleEntry.NOT_DONE:
-                    doneCheck.setChecked(false);
-                    break;
-                default:
-                    doneCheck.setChecked(false);
-                    break;
+            if (currentDone == ScheduleEntry.DONE) {
+                doneCheck.setChecked(true);
+            } else {
+                doneCheck.setChecked(false);
             }
 
             //ma the repeat checkbox with the value from the database
@@ -416,8 +437,6 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
                     repeatCheck.setChecked(true);
                     break;
                 case ScheduleEntry.REPEAT_OFF:
-                    repeatCheck.setChecked(false);
-                    break;
                 default:
                     repeatCheck.setChecked(false);
             }
@@ -462,7 +481,7 @@ public class EditorActivity extends AppCompatActivity implements android.app.Loa
 
     private void showDeleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the postivie and negative buttons on the dialog.
+        // for the positive and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.delete_dialog_msg);
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {

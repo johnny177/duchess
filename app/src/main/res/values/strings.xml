@@ -41,6 +41,8 @@
     <string name="editor_delete_schedule_successful">Delete schedule successful</string>
     <string name="editor_delete_schedule_unsuccessful">Delete schedule unsuccessful</string>
     <string name="not_repeating">Not Repeating</string>
+    <string name="once">Once</string>
+    <string name="in_every_3_days">In Every 3 days</string>
     <string name="daily">Daily</string>
     <string name="monthly">Monthly</string>
     <string name="weekly">Weekly</string>
@@ -48,8 +50,23 @@
     <string name="schedule_update_successful">Schedule Updated Successfully</string>
     <string name="schedule_update_failed">Schedule Update Failed</string>
     <string name="schedule_saved">Schedule Saved</string>
-    <string name="image_to_check_if_scedule_is_repeating">Image to check if scedule is repeating</string>
+    <string name="image_to_check_if_schedule_is_repeating">Image to check if scedule is repeating</string>
     <string name="image_to_check_if_schedule_is_done">image to check if schedule is done</string>
     <string name="you_may_delay_but_time_will_not">You may delay, but time will not.</string>
     <string name="get_started_by_adding_a_schedule">Get started by adding a schedule</string>
+    <string name="location">Location</string>
+    <string name="enter_location">Enter Location</string>
+    <string name="is_it_online">Is It Online ?</string>
+    <string name="lectures">Lectures</string>
+    <string name="project">Project</string>
+    <string name="quiz">Quiz</string>
+    <string name="assignment">Assignment</string>
+    <string name="exam">Examination</string>
+    <string name="interim_assessment">Interim Assesment (Mid-Sem)</string>
+    <string name="other">Other</string>
+    <string name="url">URL</string>
+    <string name="type_paste_url_here">Type/Paste url here</string>
+    <string name="tap_to_open_url">Tap to Open Url</string>
+    <string name="get_started_by_adding_a_reminder">Get started by adding a reminder</string>
+    <string name="reminder_empty_text">People are machines of forgetfulness</string>
 </resources>
