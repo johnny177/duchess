@@ -35,7 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/no_schedule"/>
+            android:src="@drawable/no_schedule"
+            android:contentDescription="TODO" />
 
         <TextView
             android:id="@+id/empty_title_text"
@@ -84,6 +85,6 @@
         android:padding="@dimen/smallest_padding"
         app:icon="@drawable/add_schedule64"
         android:backgroundTint="@color/colorFloatTint"
-        android:contentDescription="Opens the editor activity"
+        android:contentDescription="@string/opens_the_editor_activity"
         app:shapeAppearance="?attr/shapeAppearanceOverlay"/>
 </RelativeLayout>

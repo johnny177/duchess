@@ -119,7 +119,6 @@ public final class AlarmContract  {
         /**
          * The content uri to access the schedule data in the provider
          */
-
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_REMINDERS);
 
 

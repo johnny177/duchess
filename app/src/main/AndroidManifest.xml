@@ -41,6 +41,11 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <provider
+            android:authorities="com.nnoboa.duchess.flash"
+            android:name=".data.FlashProvider"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
