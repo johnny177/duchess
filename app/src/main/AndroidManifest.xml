@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nnoboa.duchess">
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -18,9 +20,11 @@
             android:label="Add a Schedule"
             android:parentActivityName=".activities.ScheduleActivity"></activity>
         <activity android:name=".activities.ScheduleActivity"
-            android:label="Schedules"/>
+            android:label="Schedules"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".activities.ReminderActivity"
-            android:label="Reminders"/>
+            android:label="Reminders"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,6 +37,10 @@
             android:name=".data.AlarmProvider"
             android:authorities="com.nnoboa.duchess.schedules"
             android:exported="false" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>

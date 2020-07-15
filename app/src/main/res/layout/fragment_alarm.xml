@@ -1,56 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-   <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:tools="http://schemas.android.com/tools"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
        tools:context=".fragments.AlarmFragment"
        >
+
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+
     <!--Top text view with instruction-->
-       <TextView
-           android:id="@+id/choose_alarm"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:textAppearance="@style/TextAppearance.AppCompat.Large"
-           android:text="@string/choose_alarm_type"
-           android:gravity="center_horizontal"
-           android:layout_margin="@dimen/smaller_margin"
-           android:layout_alignParentStart="true"
-           android:layout_alignParentTop="true"
-           android:textColor="#2F0070"
-           />
+      <TextView
+          android:id="@+id/choose_alarm"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentStart="true"
+          android:layout_alignParentTop="true"
+          android:layout_centerInParent="true"
+          android:layout_margin="@dimen/small_margin"
+          android:layout_marginStart="@dimen/smaller_margin"
+          android:layout_marginTop="@dimen/smaller_margin"
+          android:layout_marginEnd="@dimen/smaller_margin"
+          android:layout_marginBottom="@dimen/smaller_margin"
+          android:fontFamily="@font/bevan"
+          android:gravity="center_horizontal"
+          android:text="@string/choose_alarm_type"
+          android:textAppearance="@style/TextAppearance.AppCompat.Large"
+          android:textColor="#FF6D00" />
        <!--Reminder textview-->
-       <TextView
-           android:id="@+id/reminder_alarm_text"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-           android:layout_below="@id/choose_alarm"
-           android:drawableTop="@drawable/reminder_64"
-           android:text="@string/reminders"
-           android:layout_marginTop="@dimen/small_margin"
-           android:textAlignment="center"
-           android:padding="@dimen/smallest_padding"
-           android:layout_marginLeft="@dimen/smaller_margin"
-           android:layout_marginRight="@dimen/smaller_margin"
-           android:background="@drawable/alarm_types_background"
-           />
+      <TextView
+          android:id="@+id/reminder_alarm_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/choose_alarm"
+          android:layout_centerInParent="true"
+          android:layout_marginLeft="@dimen/smaller_margin"
+          android:layout_marginTop="@dimen/small_margin"
+          android:layout_marginRight="@dimen/smaller_margin"
+          android:background="@drawable/alarm_types_background"
+          android:drawableTop="@drawable/reminder_64"
+          android:fontFamily="@font/abril_fatface"
+          android:padding="@dimen/smallest_padding"
+          android:text="@string/reminders"
+          android:textAlignment="center"
+          android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
        <!--Schedule textView-->
-       <TextView
-           android:id="@+id/schedule_alarm_text"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-           android:layout_below="@id/reminder_alarm_text"
-           android:drawableTop="@drawable/schedule_64"
-           android:text="@string/schedule"
-           android:layout_marginTop="@dimen/small_margin"
-           android:textAlignment="center"
-           android:padding="@dimen/smallest_padding"
-           android:layout_marginLeft="@dimen/smaller_margin"
-           android:layout_marginRight="@dimen/smaller_margin"
-           android:background="@drawable/alarm_types_background"
-           />
+      <TextView
+          android:id="@+id/schedule_alarm_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/reminder_alarm_text"
+          android:layout_marginLeft="@dimen/smaller_margin"
+          android:layout_marginTop="@dimen/small_margin"
+          android:layout_marginRight="@dimen/smaller_margin"
+          android:background="@drawable/alarm_types_background"
+          android:drawableTop="@drawable/schedule_64"
+          android:fontFamily="@font/abril_fatface"
+          android:padding="@dimen/smallest_padding"
+          android:text="@string/schedule"
+          android:textAlignment="center"
+          android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
    </RelativeLayout>
+   </ScrollView>

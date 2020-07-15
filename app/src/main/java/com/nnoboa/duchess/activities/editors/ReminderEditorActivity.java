@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -25,11 +27,12 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.nnoboa.duchess.R;
-import com.nnoboa.duchess.data.AlarmContract;
 
+import java.util.Calendar;
 import java.util.Objects;
 
 import static com.nnoboa.duchess.data.AlarmContract.*;
@@ -40,6 +43,9 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
     Spinner intervalSpinner, typeSpinner;
     CheckBox onlineCheckBox, repeatCheckBox, doneCheckBox;
     TextView locOnline;
+
+    String reminderTime;
+    String reminderDate;
 
     private int REMINDER_LOADER_ID = 00;
 
@@ -77,6 +83,9 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         loaderManager = getLoaderManager();
 
         findView();
+
+        reminderDate = DateDialog();
+        reminderTime = TimeDialog();
 
         if(currentReminderUri == null){
             getSupportActionBar().setTitle("Add a reminder");
@@ -245,6 +254,8 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Delete" button, so delete the reminder.
+                deleteReminder();
+
 
             }
         });
@@ -293,9 +304,9 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         String courseId = courseIdEdit.getText().toString().trim().toUpperCase();
         String courseName = courseNameEdit.getText().toString().trim();
         String reminderLoc= locationEdit.getText().toString().trim();
-        String reminderTime = timeEdit.getText().toString().trim();
-        String reminderDate = dateEdit.getText().toString().trim();
         String reminderNote = noteEdit.getText().toString().trim();
+        String reminderTime = TimeDialog().trim();
+        String reminderDate = DateDialog().trim();
 
         setupCheckers();
 
@@ -377,6 +388,26 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
             }else{
                 Toast.makeText(this, "Reminder Update Failed",Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    /**
+     * Perform the deletion of the pet in the database.
+     */
+    private void deleteReminder() {
+
+        if(currentReminderUri !=null){
+            int rowDeleted = getContentResolver().delete(currentReminderUri,null,null);
+
+            if(rowDeleted == 0){
+                Toast.makeText(getApplicationContext(),R.string.editor_delete_schedule_unsuccessful,Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, getString(R.string.editor_delete_schedule_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+            Log.d("Editor Deleted","Row Deleted "+rowDeleted);
+            finish();
         }
     }
 
@@ -595,5 +626,81 @@ public boolean onCreateOptionsMenu(Menu menu) {
         locationEdit.setText("");
     }
 
+    public String DateDialog(){
 
+        dateEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                //launching the date dialog
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ReminderEditorActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
+                        if(month <10 & dayOfMonth>10){
+                            String nDate = year+"/0"+(month+1)+"/"+dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                        else if(dayOfMonth <10 & month>10){
+                            String nDate = year+"/"+(month+1)+"/0"+dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                        else if(month <10 & dayOfMonth <10){
+                            String nDate = year+"/0"+(month+1)+"/0"+dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                        else{
+                            String nDate = year+"/"+(month+1)+"/"+dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                    }
+
+                },year,month,day);
+                datePickerDialog.show();
+            }
+        });
+        return dateEdit.getText().toString();
+    }
+
+    //get the time from the time dialog frag
+    public String TimeDialog() {
+        timeEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int Hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int Minute = calendar.get(Calendar.MINUTE);
+
+                //launching the timepicker dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(ReminderEditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if (hourOfDay < 10 & minute > 10) {
+                            String mTime = "0" + hourOfDay + ":" + minute;
+                            timeEdit.setText(mTime);
+                        } else if (hourOfDay > 10 & minute < 10) {
+                            String mTime = hourOfDay + ":0" + minute;
+                            timeEdit.setText(mTime);
+                        } else if (hourOfDay < 10 & minute < 10) {
+                            String mTime = "0" + hourOfDay + ":0" + minute;
+                            timeEdit.setText(mTime);
+                        } else {
+                            String mTime = hourOfDay + ":" + minute;
+                            timeEdit.setText(mTime);
+                        }
+
+
+                    }
+                }, Hour, Minute, true);
+
+                timePickerDialog.show();
+            }
+        });
+        return timeEdit.getText().toString();
+    }
 }

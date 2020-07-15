@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -25,11 +27,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.data.AlarmContract;
 
+import java.util.Calendar;
 import java.util.Objects;
 
 import static com.nnoboa.duchess.data.AlarmContract.*;
@@ -59,6 +63,10 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
         }
     };
 
+    String courseTime;
+
+    String courseDate ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +80,9 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
         loaderManager = getLoaderManager();
         findViews();
 
+        courseDate = DateDialog().trim();
+
+        courseTime = TimeDialog().trim();
         if (currentScheduleUri == null) {
             getSupportActionBar().setTitle(" Add a schedule");
             doneCheck.setEnabled(false);
@@ -116,7 +127,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
     }
 
     /**
-     * get data from the vies and add it to the db
+     * get data from the views and add it to the db
      */
 
     private void saveSchedule() {
@@ -127,11 +138,15 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
 
         String courseTopic = topicEdit.getText().toString().trim();
 
-        String courseTime = timeEdit.getText().toString().trim();
-
-        String courseDate = dateEdit.getText().toString().trim();
-
         String courseNote = noteEdit.getText().toString().trim();
+
+        String courseTime = TimeDialog().trim();
+
+        String courseDate = DateDialog().trim();
+
+
+
+
 
         setupCheckers();
 
@@ -524,5 +539,85 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
             finish();
         }
     }
+
+    public String DateDialog(){
+
+        dateEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
+
+                //launching the date dialog
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ScheduleEditorActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
+                        if(month <10 & dayOfMonth>10){
+                            String nDate = year+"/0"+(month+1)+"/"+dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                        else if(dayOfMonth <10 & month>10){
+                            String nDate = year+"/"+(month+1)+"/0"+dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                        else if(month <10 & dayOfMonth <10){
+                            String nDate = year+"/0"+(month+1)+"/0"+dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                        else{
+                            String nDate = year+"/"+(month+1)+"/"+dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                    }
+
+                },year,month,day);
+                datePickerDialog.show();
+            }
+        });
+        return dateEdit.getText().toString();
+    }
+
+    //get the time from the time dialog frag
+    public String TimeDialog() {
+        timeEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                int Hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int Minute = calendar.get(Calendar.MINUTE);
+
+                //launching the timepicker dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(ScheduleEditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if (hourOfDay < 10 & minute > 10) {
+                            String mTime = "0" + hourOfDay + ":" + minute;
+                            timeEdit.setText(mTime);
+                        } else if (hourOfDay > 10 & minute < 10) {
+                            String mTime = hourOfDay + ":0" + minute;
+                            timeEdit.setText(mTime);
+                        } else if (hourOfDay < 10 & minute < 10) {
+                            String mTime = "0" + hourOfDay + ":0" + minute;
+                            timeEdit.setText(mTime);
+                        } else {
+                            String mTime = hourOfDay + ":" + minute;
+                            timeEdit.setText(mTime);
+                        }
+
+
+                    }
+                }, Hour, Minute, true);
+
+                timePickerDialog.show();
+            }
+        });
+        return timeEdit.getText().toString();
+    }
+
+
 
 }

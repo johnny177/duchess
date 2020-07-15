@@ -1,5 +1,6 @@
 package com.nnoboa.duchess.controllers.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -8,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
+
 import com.nnoboa.duchess.data.AlarmContract.ScheduleEntry;
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.data.AlarmContract;
@@ -25,6 +29,7 @@ public class ScheduleCursorAdapter extends CursorAdapter {
         return view;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
@@ -35,7 +40,7 @@ public class ScheduleCursorAdapter extends CursorAdapter {
         TextView scheduleDate = view.findViewById(R.id.schedule_date);
         TextView  scheduleTime = view.findViewById(R.id.schedule_time);
         TextView scheduleInterval = view.findViewById(R.id.schedule_interval);
-        ImageView isDoneImage = view.findViewById(R.id.schedule_is_done);
+        CardView cardView = view.findViewById(R.id.schedule_card);
 
 
         //get the columnIndex from database
@@ -60,7 +65,7 @@ public class ScheduleCursorAdapter extends CursorAdapter {
         //set appropriate image to match repeat state
         switch (currentDone){
             case ScheduleEntry.DONE:
-                isDoneImage.setImageResource(drawable.checked_64);
+                cardView.setCardBackgroundColor(R.color.material_on_background_disabled);
                 break;
             case ScheduleEntry.NOT_DONE:
                 break;

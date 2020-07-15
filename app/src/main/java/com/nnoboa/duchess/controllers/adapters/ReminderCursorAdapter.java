@@ -1,5 +1,6 @@
 package com.nnoboa.duchess.controllers.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
 
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.data.AlarmContract;
@@ -24,6 +27,7 @@ public class ReminderCursorAdapter extends CursorAdapter {
         return view;
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void bindView(View view, Context context, Cursor data) {
         TextView courseIdText = view.findViewById(R.id.reminder_course_id_text);
@@ -34,7 +38,8 @@ public class ReminderCursorAdapter extends CursorAdapter {
         TextView dateText = view.findViewById(R.id.reminder_date);
         TextView intervalText = view.findViewById(R.id.reminder_interval);
         TextView noteText = view.findViewById(R.id.reminder_note_text);
-        ImageView doneImage = view.findViewById(R.id.reminder_done_image);
+        TextView link = view.findViewById(R.id.link);
+        CardView cardView = view.findViewById(R.id.reminder_card);
 
             /*
               get the column index
@@ -88,7 +93,9 @@ public class ReminderCursorAdapter extends CursorAdapter {
 
         switch (reminderOnlineStatus){
             case AlarmContract.ReminderEntry.REMINDER_IS_ONLINE:
-                locText.setText(R.string.tap_to_open_url);
+                link.setVisibility(View.VISIBLE);
+                link.setText(reminderLoc);
+                locText.setVisibility(View.GONE);
                 break;
             case AlarmContract.ReminderEntry.REMINDER_IS_OFFLINE:
                 locText.setText(reminderLoc);
@@ -121,10 +128,10 @@ public class ReminderCursorAdapter extends CursorAdapter {
 
         switch (reminderStatus){
             case AlarmContract.ReminderEntry.STATUS_IS_DONE:
-                doneImage.setImageResource(R.drawable.checked_64);
+                cardView.setCardBackgroundColor(android.R.color.background_dark);
                 break;
             case AlarmContract.ReminderEntry.STATUS_IS_NOT_DONE:
-                doneImage.setVisibility(View.GONE);
+                break;
         }
 
 

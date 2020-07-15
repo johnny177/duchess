@@ -10,6 +10,7 @@
         android:id="@+id/frag_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#C5F3D8"
         android:layout_above="@id/bottom_nav"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,6 +21,7 @@
         app:itemTextColor="@color/colorPrimary"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:backgroundTint="@color/cardview_dark_background"
         app:menu="@menu/bottom_nav"
         android:background="?android:attr/windowBackground"/>
 

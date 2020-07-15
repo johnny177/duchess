@@ -2,6 +2,7 @@ package com.nnoboa.duchess.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -11,11 +12,13 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -29,7 +32,7 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
     ExtendedFloatingActionButton addSchedule;
 //    TextView displayText;
     android.app.LoaderManager loaderManager;
-    ListView scheduleList;
+    GridView scheduleList;
     ScheduleCursorAdapter scheduleCursorAdapter;
     View emptyView;
 
@@ -52,6 +55,18 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
         startEditorIntent();
         scheduleList.setEmptyView(emptyView);
         scheduleList.setAdapter(scheduleCursorAdapter);
+
+
+        scheduleList.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if(scrollY < oldScrollY){
+                    addSchedule.shrink();
+                }else{
+                    addSchedule.extend();
+                }
+            }
+        });
 
         scheduleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

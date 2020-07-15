@@ -71,7 +71,7 @@ public class AlarmProvider extends ContentProvider {
                         projection,
                         selection,
                         selectionArgs,
-                        ScheduleEntry.COLUMN_SCHEDULE_DATE,
+                        null,
                         null,
                         sortOrder);
                 break;
