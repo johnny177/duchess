@@ -22,10 +22,18 @@ import android.widget.GridView;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.activities.editors.ScheduleEditorActivity;
 import com.nnoboa.duchess.controllers.adapters.ScheduleCursorAdapter;
+import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.data.AlarmContract;
+
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
 public class ScheduleActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -44,8 +52,12 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
+        AndroidThreeTen.init(this);
 
         loaderManager = getLoaderManager();
+        Util.scheduleJob(this);
+
+
 
 
 
@@ -123,7 +135,8 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME,"Microeconomics");
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC,"Demand");
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TIME,"19:00");
-        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DATE,"21/01/1990");
+        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DATE,"15/07/2020");
+        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_MILLI,"60*1000");
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_REPEAT, AlarmContract.ScheduleEntry.REPEAT_OFF);
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_INTERVAL, AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_DAILY);
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DONE, AlarmContract.ScheduleEntry.NOT_DONE);
@@ -244,6 +257,7 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC,
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TIME,
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DATE,
+                AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_MILLI,
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_REPEAT,
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_INTERVAL,
                 AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_NOTE,
@@ -290,5 +304,37 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public long Millis(String time,String date){
+        long milli = 0;
+        try{
+            String DateTime = date+" 0"+time+":00";
+
+
+//        DateTime = DateTime.replace(" ","T").replace("/","-");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
+
+            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+            OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+
+            milli = offsetDateTime.toInstant().toEpochMilli();
+            Log.i("Millis"," "+milli);}
+        catch (org.threeten.bp.format.DateTimeParseException e ){
+            String DateTime = date+" "+time+":00";
+
+
+//        DateTime = DateTime.replace(" ","T").replace("/","-");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
+
+            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+            OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+
+            milli = offsetDateTime.toInstant().toEpochMilli();
+            Log.i("Millis"," "+milli);
+        }
+        return milli;
     }
 }

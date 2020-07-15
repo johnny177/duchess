@@ -3,6 +3,7 @@
     package="com.nnoboa.duchess">
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
     <application
         android:allowBackup="true"
@@ -18,7 +19,7 @@
         <activity
             android:name=".activities.editors.ScheduleEditorActivity"
             android:label="Add a Schedule"
-            android:parentActivityName=".activities.ScheduleActivity"></activity>
+            android:parentActivityName=".activities.ScheduleActivity" />
         <activity android:name=".activities.ScheduleActivity"
             android:label="Schedules"
             android:parentActivityName=".MainActivity"/>
@@ -45,6 +46,16 @@
             android:authorities="com.nnoboa.duchess.flash"
             android:name=".data.FlashProvider"
             android:exported="false"/>
+
+        <service
+            android:name=".controllers.alarm.AlarmJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service android:name=".controllers.alarm.RingTonePlayingService"
+            android:enabled="true"/>
+
+        <receiver android:name=".controllers.alarm.AlarmReceiver"/>
+        <service android:name=".controllers.alarm.JobRingtonePlayingService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
 
     </application>
 

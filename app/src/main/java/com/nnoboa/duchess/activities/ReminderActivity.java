@@ -142,6 +142,7 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
         values.put(ReminderEntry.COLUMN_REMINDER_TYPE,ReminderEntry.REMINDER_TYPE_LECTURES);
         values.put(ReminderEntry.COLUMN_REMINDER_TIME,"19:00");
         values.put(ReminderEntry.COLUMN_REMINDER_DATE, "09/07/2020");
+        values.put(ReminderEntry.COLUMN_REMINDER_MILLI,"34523736524");
         values.put(ReminderEntry.COLUMN_REMINDER_LOCATION,"NNB");
         values.put(ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS, ReminderEntry.REMINDER_IS_OFFLINE);
         values.put(ReminderEntry.COLUMN_REMINDER_REPEAT,ReminderEntry.REMINDER_IS_NOT_REPEATING);
@@ -230,6 +231,7 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
                 ReminderEntry.COLUMN_REMINDER_TIME,
                 ReminderEntry.COLUMN_REMINDER_DATE,
                 ReminderEntry.COLUMN_REMINDER_LOCATION,
+                ReminderEntry.COLUMN_REMINDER_MILLI,
                 ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS,
                 ReminderEntry.COLUMN_REMINDER_REPEAT,
                 ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL,

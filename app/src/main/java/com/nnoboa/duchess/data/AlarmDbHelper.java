@@ -9,6 +9,7 @@ import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_COURSE_
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_COURSE_NAME;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_LOCATION;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_MILLI;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_NOTE;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT;
@@ -48,7 +49,8 @@ public class AlarmDbHelper extends SQLiteOpenHelper {
                         ScheduleEntry.COLUMN_SCHEDULE_TOPIC+TEXT +" NOT NULL"+COMMA+
                         ScheduleEntry.COLUMN_SCHEDULE_TIME+TEXT+" NOT NULL"+COMMA+
                         ScheduleEntry.COLUMN_SCHEDULE_DATE+TEXT+" NOT NULL"+COMMA+
-                        ScheduleEntry.COLUMN_SCHEDULE_REPEAT+" NOT NULL"+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_MILLI+INT+" NOT NULL"+COMMA+
+                        ScheduleEntry.COLUMN_SCHEDULE_REPEAT+INT+" NOT NULL"+COMMA+
                         ScheduleEntry.COLUMN_SCHEDULE_INTERVAL+INT+" NOT NULL"+COMMA+
                         ScheduleEntry.COLUMN_SCHEDULE_NOTE+TEXT+COMMA+
                         ScheduleEntry.COLUMN_SCHEDULE_DONE+INT+" NOT NULL DEFAULT "+ScheduleEntry.NOT_DONE+" )";
@@ -62,6 +64,7 @@ public class AlarmDbHelper extends SQLiteOpenHelper {
                 + COLUMN_REMINDER_TYPE + " INTEGER NOT NULL, "
                 + COLUMN_REMINDER_TIME + " TEXT NOT NULL, "
                 + COLUMN_REMINDER_DATE + " TEXT NOT NULL, "
+                + COLUMN_REMINDER_MILLI + " INTEGER NOT NULL, "
                 + COLUMN_REMINDER_LOCATION +" TEXT NOT NULL, "
                 + COLUMN_REMINDER_ONLINE_STATUS+ " INTEGER NOT NULL DEFAULT 301, "
                 + COLUMN_REMINDER_REPEAT + " INTEGER NOT NULL DEFAULT 400, "

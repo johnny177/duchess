@@ -17,7 +17,6 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="add_schedule">Add Schedule</string>
     <string name="add_reminder">Add Reminder</string>
-    <string name="opens_the_editor_activity">Opens the editor activity</string>
     <string name="overview">Overview</string>
     <string name="course_id_eg_econ_312">Course ID Eg: ECON 312</string>
     <string name="course_name_eg_microeconomics">Course Name Eg: Microeconomics</string>

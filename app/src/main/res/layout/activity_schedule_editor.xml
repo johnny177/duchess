@@ -76,7 +76,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:padding="@dimen/smallest_padding"
             android:orientation="vertical">
 
@@ -85,14 +85,40 @@
                 style="@style/EditorFieldStyle"
                 android:hint="@string/time"
                 android:inputType="time"
+                android:enabled="false"
                 android:id="@+id/edit_time"/>
 
             <!--Date EditField-->
             <EditText
                style="@style/EditorFieldStyle"
                 android:hint="@string/date"
+                android:enabled="false"
                 android:inputType="date"
                 android:id="@+id/edit_date"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_clock"
+                android:text="@string/time"
+                android:onClick="TimeDialog"
+                android:layout_margin="@dimen/smallest_padding"
+                android:background="@color/colorPrimary"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date"
+                android:onClick="DateDialog"
+                android:layout_margin="@dimen/smallest_padding"
+                android:background="@color/colorPrimary"
+                android:drawableStart="@drawable/ic_baseline_calendar_today_24"/>
+
         </LinearLayout>
     </LinearLayout>
 

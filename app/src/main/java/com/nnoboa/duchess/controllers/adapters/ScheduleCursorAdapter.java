@@ -2,6 +2,7 @@ package com.nnoboa.duchess.controllers.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,8 @@ public class ScheduleCursorAdapter extends CursorAdapter {
         TextView scheduleInterval = view.findViewById(R.id.schedule_interval);
         CardView cardView = view.findViewById(R.id.schedule_card);
 
+        ColorStateList colorStateList = cardView.getCardBackgroundColor();
+
 
         //get the columnIndex from database
         int courseIDColumnIndex = cursor.getColumnIndexOrThrow(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID);
@@ -68,6 +71,7 @@ public class ScheduleCursorAdapter extends CursorAdapter {
                 cardView.setCardBackgroundColor(R.color.material_on_background_disabled);
                 break;
             case ScheduleEntry.NOT_DONE:
+                cardView.setCardBackgroundColor(colorStateList);
                 break;
         }
 

@@ -3,10 +3,13 @@ package com.nnoboa.duchess.activities.editors;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,8 +33,17 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
+import com.nnoboa.duchess.controllers.alarm.AlarmReceiver;
+import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.data.AlarmContract;
+
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -51,6 +63,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
     private int interval;
     private int doneWithSchedule;
     private int repeatSchedule;
+    private int rowAffected;
 
     android.app.LoaderManager loaderManager;
     Uri currentScheduleUri;
@@ -72,6 +85,8 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_editor);
+        AndroidThreeTen.init(this);
+        Util.scheduleJob(this);
 
         Intent intent = getIntent();
 
@@ -80,9 +95,6 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
         loaderManager = getLoaderManager();
         findViews();
 
-        courseDate = DateDialog().trim();
-
-        courseTime = TimeDialog().trim();
         if (currentScheduleUri == null) {
             getSupportActionBar().setTitle(" Add a schedule");
             doneCheck.setEnabled(false);
@@ -132,6 +144,8 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
 
     private void saveSchedule() {
 
+        int id = 0;
+
         String courseID = idEdit.getText().toString().trim().toUpperCase();
 
         String courseName = nameEdit.getText().toString().trim();
@@ -140,9 +154,10 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
 
         String courseNote = noteEdit.getText().toString().trim();
 
-        String courseTime = TimeDialog().trim();
+        String courseTime = timeEdit.getText().toString().trim();
 
-        String courseDate = DateDialog().trim();
+        String courseDate = dateEdit.getText().toString().trim();
+        long milliseconds = Millis(courseTime,courseDate);
 
 
 
@@ -172,6 +187,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
             contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_TIME, courseTime);
             contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_DATE, courseDate);
             contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_NOTE, courseNote);
+            contentValues.put(ScheduleEntry.COLUMN_SCHEDULE_MILLI,milliseconds);
         }
 
         if(repeatSchedule == ScheduleEntry.REPEAT_OFF){
@@ -201,12 +217,14 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
                 Uri newRowId = getContentResolver().insert(ScheduleEntry.CONTENT_URI,contentValues);
                 Log.d("Editor ", "Added new Row "+newRowId);
                 Toast.makeText(this, R.string.schedule_saved,Toast.LENGTH_SHORT).show();
+                assert newRowId != null;
+                id = Integer.parseInt(newRowId.getLastPathSegment());
                 finish();
             }catch (SQLException e){
                 Toast.makeText(this, "Error Adding new Schedule",Toast.LENGTH_SHORT).show();
             }
         }else {
-            int rowAffected = getContentResolver().update(currentScheduleUri,
+            rowAffected = getContentResolver().update(currentScheduleUri,
                     contentValues,null,
                     null);
 
@@ -217,6 +235,8 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
                 Toast.makeText(this, R.string.schedule_update_failed, Toast.LENGTH_SHORT).show();
             }
         }
+
+        startAlarm(milliseconds,id,courseID,courseName,courseTopic,courseNote,doneWithSchedule,repeatSchedule,interval);
     }
 
     /**
@@ -325,6 +345,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
         switch (item.getItemId()){
             case R.id.action_save:
                 saveSchedule();
+                Util.scheduleJob(this);
                 return true;
 
             case R.id.action_delete:
@@ -376,6 +397,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
                 ScheduleEntry.COLUMN_SCHEDULE_TIME,
                 ScheduleEntry.COLUMN_SCHEDULE_DATE,
                 ScheduleEntry.COLUMN_SCHEDULE_REPEAT,
+                ScheduleEntry.COLUMN_SCHEDULE_MILLI,
                 ScheduleEntry.COLUMN_SCHEDULE_INTERVAL,
                 ScheduleEntry.COLUMN_SCHEDULE_NOTE,
                 ScheduleEntry.COLUMN_SCHEDULE_DONE
@@ -393,7 +415,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor cursor) {
         if(cursor.moveToFirst()){
 
-//            int idColumnIndex = cursor.getColumnIndex(AlarmContract.ScheduleEntry.SCHEDULE_COLUMN_ID);
+            int idColumnIndex = cursor.getColumnIndex(AlarmContract.ScheduleEntry._ID);
             int courseIDColumnIndex = cursor.getColumnIndexOrThrow(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID);
             int courseNameColumnIndex = cursor.getColumnIndex(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME);
             int courseTopicColumnIndex = cursor.getColumnIndexOrThrow(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC);
@@ -403,7 +425,9 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
             int courseIntervalColumnIndex = cursor.getColumnIndex(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_INTERVAL);
             int courseNoteColumnIndex = cursor.getColumnIndex(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_NOTE);
             int courseDoneColumnIndex = cursor.getColumnIndexOrThrow(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DONE);
+            int currentMilliseconds = cursor.getColumnIndexOrThrow(ScheduleEntry.COLUMN_SCHEDULE_MILLI);
 
+            int currentId = cursor.getInt(idColumnIndex);
             String currentCourseId = cursor.getString(courseIDColumnIndex);
             String currentCourseName = cursor.getString(courseNameColumnIndex);
             String currentTopic = cursor.getString(courseTopicColumnIndex);
@@ -413,6 +437,9 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
             int currentInterval = cursor.getInt(courseIntervalColumnIndex);
             int currentDone = cursor.getInt(courseDoneColumnIndex);
             String currentNote = cursor.getString(courseNoteColumnIndex);
+            long milli = cursor.getLong(currentMilliseconds);
+
+//            startAlarm(milli,currentId,currentCourseId,currentCourseName,currentTopic,currentNote,currentDone,currentRepeat,currentInterval);
 
             //update the view on the screen with values from the database
             idEdit.setText(currentCourseId);
@@ -540,11 +567,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
         }
     }
 
-    public String DateDialog(){
-
-        dateEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    public void DateDialog(View view){
                 Calendar calendar = Calendar.getInstance();
 
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -555,20 +578,17 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
                 DatePickerDialog datePickerDialog = new DatePickerDialog(ScheduleEditorActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
-                        if(month <10 & dayOfMonth>10){
-                            String nDate = year+"/0"+(month+1)+"/"+dayOfMonth;
+                        if (month < 10 & dayOfMonth > 10) {
+                            String nDate = year + "/0" + (month + 1) + "/" + dayOfMonth;
                             dateEdit.setText(nDate);
-                        }
-                        else if(dayOfMonth <10 & month>10){
-                            String nDate = year+"/"+(month+1)+"/0"+dayOfMonth;
+                        } else if (dayOfMonth < 10 & month > 10) {
+                            String nDate = year + "/" + (month + 1) + "/0" + dayOfMonth;
                             dateEdit.setText(nDate);
-                        }
-                        else if(month <10 & dayOfMonth <10){
-                            String nDate = year+"/0"+(month+1)+"/0"+dayOfMonth;
+                        } else if (month < 10 & dayOfMonth < 10) {
+                            String nDate = year + "/0" + (month + 1) + "/0" + dayOfMonth;
                             dateEdit.setText(nDate);
-                        }
-                        else{
-                            String nDate = year+"/"+(month+1)+"/"+dayOfMonth;
+                        } else {
+                            String nDate = year + "/" + (month + 1) + "/" + dayOfMonth;
                             dateEdit.setText(nDate);
                         }
                     }
@@ -576,15 +596,9 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
                 },year,month,day);
                 datePickerDialog.show();
             }
-        });
-        return dateEdit.getText().toString();
-    }
 
     //get the time from the time dialog frag
-    public String TimeDialog() {
-        timeEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    public void TimeDialog(View view) {
                 final Calendar calendar = Calendar.getInstance();
                 int Hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int Minute = calendar.get(Calendar.MINUTE);
@@ -594,30 +608,98 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
 
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        if (hourOfDay < 10 & minute > 10) {
+                        if (hourOfDay < 10 && minute > 10) {
                             String mTime = "0" + hourOfDay + ":" + minute;
                             timeEdit.setText(mTime);
-                        } else if (hourOfDay > 10 & minute < 10) {
+                        } else if (hourOfDay > 10 && minute < 10) {
                             String mTime = hourOfDay + ":0" + minute;
                             timeEdit.setText(mTime);
-                        } else if (hourOfDay < 10 & minute < 10) {
+                        } else if (hourOfDay < 10 && minute < 10) {
                             String mTime = "0" + hourOfDay + ":0" + minute;
                             timeEdit.setText(mTime);
-                        } else {
+                        } else if(hourOfDay>0 && minute >0){
                             String mTime = hourOfDay + ":" + minute;
                             timeEdit.setText(mTime);
                         }
-
-
                     }
                 }, Hour, Minute, true);
 
                 timePickerDialog.show();
-            }
-        });
-        return timeEdit.getText().toString();
     }
 
+    public long Millis(String time,String date){
+        long milli;
+        try{
+            String DateTime = date+" 0"+time+":00";
 
+
+//        DateTime = DateTime.replace(" ","T").replace("/","-");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
+
+            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+            OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+
+            milli = offsetDateTime.toInstant().toEpochMilli();
+            Log.i("Millis"," "+milli);}
+        catch (org.threeten.bp.format.DateTimeParseException e ){
+            String DateTime = date+" "+time+":00";
+
+
+//        DateTime = DateTime.replace(" ","T").replace("/","-");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
+
+            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+            OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+
+            milli = offsetDateTime.toInstant().toEpochMilli();
+            Log.i("Millis"," "+milli);
+        }
+        return milli;
+    }
+
+    private void startAlarm(long milliseconds,int currentID, String currentCourseId,String currentCourseName, String currentTopic,String currentNote,int currentDone, int currentRepeat, int currentInterval){
+        Context context = ScheduleEditorActivity.this;
+        ContentValues values = new ContentValues();
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
+        intent.putExtra("id",currentID);
+        intent.putExtra("courseID",currentCourseId);
+        intent.putExtra("courseName",currentCourseName);
+        intent.putExtra("currentTopic",currentTopic);
+        intent.putExtra("currentNote",currentNote);
+        intent.putExtra("currentStatus",currentDone);
+
+        Log.d("ScheduleEditor",""+currentID+"-"+currentTopic+"-"+currentNote);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),currentID,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if(currentDone == AlarmContract.ScheduleEntry.NOT_DONE) {
+            switch (currentRepeat) {
+                case AlarmContract.ScheduleEntry.REPEAT_OFF:
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, milliseconds, pendingIntent);
+                    values.put(ScheduleEntry.COLUMN_SCHEDULE_DONE, ScheduleEntry.DONE);
+                    String selection = currentID+"=?";
+                    getContentResolver().update(AlarmContract.ScheduleEntry.CONTENT_URI,values,selection,null);
+                    Log.d("ScheduleEditor","CurrentID = "+currentID);
+                    break;
+
+                case AlarmContract.ScheduleEntry.REPEAT_ON:
+                    switch (currentInterval) {
+                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_DAILY:
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, 10000, pendingIntent);
+                            break;
+                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_WEEKLY:
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+                            break;
+                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_MONTHLY:
+                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, AlarmManager.INTERVAL_DAY * 30, pendingIntent);
+                            break;
+                    }
+                    break;
+            }
+        }
+    }
 
 }

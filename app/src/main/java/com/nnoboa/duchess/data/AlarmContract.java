@@ -55,6 +55,7 @@ public final class AlarmContract  {
         public static final String COLUMN_SCHEDULE_TOPIC = "topic";
         public static final String COLUMN_SCHEDULE_TIME = "time";
         public static final String COLUMN_SCHEDULE_DATE = "date";
+        public static final String COLUMN_SCHEDULE_MILLI = "milliseconds";
         public static final String COLUMN_SCHEDULE_REPEAT = "repeat";
         public static final String COLUMN_SCHEDULE_INTERVAL= "interval";
         public static final String COLUMN_SCHEDULE_NOTE = "note";
@@ -137,6 +138,7 @@ public final class AlarmContract  {
         public static final String COLUMN_REMINDER_TYPE = "reminder_type";
         public static final String COLUMN_REMINDER_DATE = "reminder_date";
         public static final String COLUMN_REMINDER_TIME = "reminder_time";
+        public static final String COLUMN_REMINDER_MILLI = "reminder_milliseconds";
         public static final String COLUMN_REMINDER_REPEAT = "reminder_repeat";
         public static final String COLUMN_REMINDER_STATUS = "reminder_status";
         public static final String COLUMN_REMINDER_REPEAT_INTERVAL = "reminder_repeat_interval";
