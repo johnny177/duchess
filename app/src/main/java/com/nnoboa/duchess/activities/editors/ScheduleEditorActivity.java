@@ -1,15 +1,9 @@
 package com.nnoboa.duchess.activities.editors;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
-
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,9 +27,12 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
-import com.nnoboa.duchess.controllers.alarm.AlarmReceiver;
+import com.nnoboa.duchess.controllers.alarm.AlarmStarter;
 import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.data.AlarmContract;
 
@@ -48,7 +45,7 @@ import org.threeten.bp.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Objects;
 
-import static com.nnoboa.duchess.data.AlarmContract.*;
+import static com.nnoboa.duchess.data.AlarmContract.ScheduleEntry;
 
 public class ScheduleEditorActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -91,6 +88,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
         Intent intent = getIntent();
 
         currentScheduleUri = intent.getData();
+        AlarmStarter.init(this);
 
         loaderManager = getLoaderManager();
         findViews();
@@ -236,7 +234,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
             }
         }
 
-        startAlarm(milliseconds,id,courseID,courseName,courseTopic,courseNote,doneWithSchedule,repeatSchedule,interval);
+//        startAlarm(milliseconds,id,courseID,courseName,courseTopic,courseNote,doneWithSchedule,repeatSchedule,interval);
     }
 
     /**
@@ -438,6 +436,7 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
             int currentDone = cursor.getInt(courseDoneColumnIndex);
             String currentNote = cursor.getString(courseNoteColumnIndex);
             long milli = cursor.getLong(currentMilliseconds);
+            AlarmStarter.init(this);
 
 //            startAlarm(milli,currentId,currentCourseId,currentCourseName,currentTopic,currentNote,currentDone,currentRepeat,currentInterval);
 
@@ -502,7 +501,8 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
     @Override
     public void onBackPressed() {
         if(!mScheduleChanged){
-        super.onBackPressed();
+            super.onBackPressed();
+            AlarmStarter.init(this);
         return;}
 
         // Otherwise if there are unsaved changes, setup a dialog to warn the user.
@@ -659,47 +659,64 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
         return milli;
     }
 
-    private void startAlarm(long milliseconds,int currentID, String currentCourseId,String currentCourseName, String currentTopic,String currentNote,int currentDone, int currentRepeat, int currentInterval){
-        Context context = ScheduleEditorActivity.this;
-        ContentValues values = new ContentValues();
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
-        intent.putExtra("id",currentID);
-        intent.putExtra("courseID",currentCourseId);
-        intent.putExtra("courseName",currentCourseName);
-        intent.putExtra("currentTopic",currentTopic);
-        intent.putExtra("currentNote",currentNote);
-        intent.putExtra("currentStatus",currentDone);
-
-        Log.d("ScheduleEditor",""+currentID+"-"+currentTopic+"-"+currentNote);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),currentID,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-        if(currentDone == AlarmContract.ScheduleEntry.NOT_DONE) {
-            switch (currentRepeat) {
-                case AlarmContract.ScheduleEntry.REPEAT_OFF:
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, milliseconds, pendingIntent);
-                    values.put(ScheduleEntry.COLUMN_SCHEDULE_DONE, ScheduleEntry.DONE);
-                    String selection = currentID+"=?";
-                    getContentResolver().update(AlarmContract.ScheduleEntry.CONTENT_URI,values,selection,null);
-                    Log.d("ScheduleEditor","CurrentID = "+currentID);
-                    break;
-
-                case AlarmContract.ScheduleEntry.REPEAT_ON:
-                    switch (currentInterval) {
-                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_DAILY:
-                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, 10000, pendingIntent);
-                            break;
-                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_WEEKLY:
-                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, AlarmManager.INTERVAL_DAY * 7, pendingIntent);
-                            break;
-                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_MONTHLY:
-                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, AlarmManager.INTERVAL_DAY * 30, pendingIntent);
-                            break;
-                    }
-                    break;
-            }
-        }
+    //    private void startAlarm(long milliseconds,int currentID, String currentCourseId,String currentCourseName, String currentTopic,String currentNote,int currentDone, int currentRepeat, int currentInterval){
+//        Context context = ScheduleEditorActivity.this;
+//        ContentValues values = new ContentValues();
+//        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
+//        intent.putExtra("id",currentID);
+//        intent.putExtra("courseID",currentCourseId);
+//        intent.putExtra("courseName",currentCourseName);
+//        intent.putExtra("currentTopic",currentTopic);
+//        intent.putExtra("currentNote",currentNote);
+//        intent.putExtra("currentStatus",currentDone);
+//
+//        Log.d("ScheduleEditor",""+currentID+"-"+currentTopic+"-"+currentNote);
+//
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),currentID,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        if(currentDone == AlarmContract.ScheduleEntry.NOT_DONE) {
+//            switch (currentRepeat) {
+//                case AlarmContract.ScheduleEntry.REPEAT_OFF:
+//                    alarmManager.set(AlarmManager.RTC_WAKEUP, milliseconds, pendingIntent);
+//                    values.put(ScheduleEntry.COLUMN_SCHEDULE_DONE, ScheduleEntry.DONE);
+//                    String selection = currentID+"=?";
+//                    getContentResolver().update(AlarmContract.ScheduleEntry.CONTENT_URI,values,selection,null);
+//                    Log.d("ScheduleEditor","CurrentID = "+currentID);
+//                    break;
+//
+//                case AlarmContract.ScheduleEntry.REPEAT_ON:
+//                    switch (currentInterval) {
+//                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_DAILY:
+//                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, 10000, pendingIntent);
+//                            break;
+//                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_WEEKLY:
+//                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+//                            break;
+//                        case AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_MONTHLY:
+//                            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, milliseconds, AlarmManager.INTERVAL_DAY * 30, pendingIntent);
+//                            break;
+//                    }
+//                    break;
+//            }
+//        }
+//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Util.scheduleJob(this);
+        AlarmStarter.init(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AlarmStarter.init(this);
+    }
 }

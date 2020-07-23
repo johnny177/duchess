@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.nnoboa.duchess.data.AlarmContract.*;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_COURSE_ID;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_COURSE_NAME;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE;
@@ -19,6 +18,7 @@ import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDE
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.COLUMN_REMINDER_TYPE;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry.TABLE_NAME;
 import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry._ID;
+import static com.nnoboa.duchess.data.AlarmContract.ScheduleEntry;
 
 public class AlarmDbHelper extends SQLiteOpenHelper {
 

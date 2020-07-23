@@ -1,34 +1,21 @@
 package com.nnoboa.duchess;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.job.JobParameters;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jakewharton.threetenabp.AndroidThreeTen;
-import com.nnoboa.duchess.controllers.alarm.AlarmReceiver;
-import com.nnoboa.duchess.controllers.alarm.ScheduleAlarmStarter;
+import com.nnoboa.duchess.controllers.alarm.AlarmStarter;
 import com.nnoboa.duchess.controllers.alarm.Util;
-import com.nnoboa.duchess.data.AlarmContract;
 import com.nnoboa.duchess.fragments.AlarmFragment;
 import com.nnoboa.duchess.fragments.DocFragment;
 import com.nnoboa.duchess.fragments.FlashFragment;
 import com.nnoboa.duchess.fragments.WebFragment;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +27,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AndroidThreeTen.init(this);
         this.context = this;
-        ScheduleAlarmStarter.startAlarm(context);
+
+        AlarmStarter.init(context);
 
         Util.scheduleJob(this);
 
@@ -48,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 //        QueryDb();
 
 
-        //fint the bottom navigation from the xml
+        //find the bottom navigation from the xml
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
@@ -88,4 +76,34 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Util.scheduleJob(this);
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AlarmStarter.init(this);
+    }
 }

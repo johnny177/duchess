@@ -84,12 +84,9 @@ public final class AlarmContract  {
         public static final int NOT_DONE = 1001;
 
         public static boolean isValidInterval(int interval){
-            if(interval == SCHEDULE_REPEAT_DAILY ||interval ==SCHEDULE_NOT_REPEATING
-                    ||interval == SCHEDULE_REPEAT_MONTHLY ||
-            interval == SCHEDULE_REPEAT_WEEKLY) {
-                return true;
-            }
-            return false;
+            return interval == SCHEDULE_REPEAT_DAILY || interval == SCHEDULE_NOT_REPEATING
+                    || interval == SCHEDULE_REPEAT_MONTHLY ||
+                    interval == SCHEDULE_REPEAT_WEEKLY;
         }
 
     }

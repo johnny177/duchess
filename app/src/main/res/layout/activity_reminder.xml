@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/MyMaterialTheme"
+    android:background="#F6F1D5"
     tools:context=".activities.ReminderActivity">
 
 <!--    <TextView-->

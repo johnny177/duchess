@@ -14,7 +14,11 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-import static com.nnoboa.duchess.data.AlarmContract.*;
+import static com.nnoboa.duchess.data.AlarmContract.CONTENT_AUTHORITY;
+import static com.nnoboa.duchess.data.AlarmContract.PATH_REMINDERS;
+import static com.nnoboa.duchess.data.AlarmContract.PATH_SCHEDULES;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry;
+import static com.nnoboa.duchess.data.AlarmContract.ScheduleEntry;
 
 public class AlarmProvider extends ContentProvider {
     private static final int SCHEDULES = 100;

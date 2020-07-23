@@ -6,7 +6,7 @@
     app:cardCornerRadius="@dimen/small_margin"
     android:id="@+id/reminder_card"
     android:backgroundTintMode="multiply"
-    android:background="#CEFAF4"
+    android:background="@color/reminder_default_background"
     android:backgroundTint="#DDFAF6"
     android:elevation="@dimen/smaller_margin"
     android:layout_margin="@dimen/largest_margin">

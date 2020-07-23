@@ -1,9 +1,5 @@
 package com.nnoboa.duchess.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -12,28 +8,24 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.activities.editors.ScheduleEditorActivity;
 import com.nnoboa.duchess.controllers.adapters.ScheduleCursorAdapter;
+import com.nnoboa.duchess.controllers.alarm.AlarmStarter;
 import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.data.AlarmContract;
-
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.OffsetDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
 
 public class ScheduleActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -44,7 +36,7 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
     ScheduleCursorAdapter scheduleCursorAdapter;
     View emptyView;
 
-    int SCHEDULE_LOADER_ID = 0;
+    final int SCHEDULE_LOADER_ID = 0;
 
 
 
@@ -306,35 +298,40 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
         return super.onOptionsItemSelected(item);
     }
 
-    public long Millis(String time,String date){
-        long milli = 0;
-        try{
-            String DateTime = date+" 0"+time+":00";
+    //    @Override
+//    protected void onResume() {
+//        recreate();
+//        super.onResume();
+//    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Util.scheduleJob(this);
+        AlarmStarter.init(this);
+    }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AlarmStarter.init(this);
+    }
 
-//        DateTime = DateTime.replace(" ","T").replace("/","-");
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AlarmStarter.init(this);
+    }
 
-            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
-            OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AlarmStarter.init(this);
+    }
 
-            milli = offsetDateTime.toInstant().toEpochMilli();
-            Log.i("Millis"," "+milli);}
-        catch (org.threeten.bp.format.DateTimeParseException e ){
-            String DateTime = date+" "+time+":00";
-
-
-//        DateTime = DateTime.replace(" ","T").replace("/","-");
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-            LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
-
-            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
-            OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
-
-            milli = offsetDateTime.toInstant().toEpochMilli();
-            Log.i("Millis"," "+milli);
-        }
-        return milli;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AlarmStarter.init(this);
     }
 }
+

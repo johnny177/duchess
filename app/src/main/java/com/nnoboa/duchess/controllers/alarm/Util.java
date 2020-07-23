@@ -12,6 +12,7 @@ public class Util {
         ComponentName name = new ComponentName(context,AlarmJobService.class);
         JobInfo.Builder builder = new JobInfo.Builder(0,name);
         builder.setPersisted(true);
+        builder.setRequiresDeviceIdle(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             builder.setPeriodic(1000,0);

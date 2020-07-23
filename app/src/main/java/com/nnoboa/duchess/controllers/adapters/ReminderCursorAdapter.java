@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -23,8 +22,7 @@ public class ReminderCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.reminder_list, parent, false);
-        return view;
+        return LayoutInflater.from(parent.getContext()).inflate(R.layout.reminder_list, parent, false);
     }
 
     @SuppressLint("ResourceAsColor")

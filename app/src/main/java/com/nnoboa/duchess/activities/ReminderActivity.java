@@ -1,40 +1,33 @@
 package com.nnoboa.duchess.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.loader.app.LoaderManager;
-
-import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.activities.editors.ReminderEditorActivity;
-import com.nnoboa.duchess.activities.editors.ScheduleEditorActivity;
 import com.nnoboa.duchess.controllers.adapters.ReminderCursorAdapter;
-import com.nnoboa.duchess.data.AlarmContract;
-import com.nnoboa.duchess.data.AlarmDbHelper;
+import com.nnoboa.duchess.controllers.alarm.AlarmStarter;
+import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.data.AlarmContract.ReminderEntry;
+import com.nnoboa.duchess.data.AlarmDbHelper;
 
 public class ReminderActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -43,7 +36,7 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
     ReminderCursorAdapter reminderCursorAdapter;
     View emptyView;
 
-    int REMINDER_LOADER_ID = 00;
+    final int REMINDER_LOADER_ID = 00;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,9 +123,11 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
 //        }
 //    }
 
+    @SuppressWarnings("unused")
     private void insertDummyData(){
         AlarmDbHelper dbHelper= new AlarmDbHelper(this);
 
+        //noinspection unused
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -177,39 +172,43 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
         return super.onOptionsItemSelected(item);
     }
 
-    private void showDeleteConfirmationDialog() {
-        // Create an AlertDialog.Builder and set the message, and click listeners
-        // for the positive and negative buttons on the dialog.
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.delete_dialog_msg);
-        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Delete" button, so delete the reminder.
-                deleteReminder();
+// --Commented out by Inspection START (7/22/20 3:55 PM):
+//    private void showDeleteConfirmationDialog() {
+//        // Create an AlertDialog.Builder and set the message, and click listeners
+//        // for the positive and negative buttons on the dialog.
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setMessage(R.string.delete_dialog_msg);
+//        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                // User clicked the "Delete" button, so delete the reminder.
+//                deleteReminder();
+//
+//            }
+//        });
+//        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//            public void onClick(DialogInterface dialog, int id) {
+//                // User clicked the "Cancel" button, so dismiss the dialog
+//                // and continue editing the pet.
+//                if (dialog != null) {
+//                    dialog.dismiss();
+//                }
+//            }
+//        });
+//
+//        // Create and show the AlertDialog
+//        AlertDialog alertDialog = builder.create();
+//        alertDialog.show();
+//    }
+// --Commented out by Inspection STOP (7/22/20 3:55 PM)
 
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked the "Cancel" button, so dismiss the dialog
-                // and continue editing the pet.
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
+    private void deleteReminder() {
+        if (ContentUris.withAppendedId(ReminderEntry.CONTENT_URI, listView.getId()) != null) {
+            int
+                    rowDeleted =
+                    getContentResolver().delete(ContentUris.withAppendedId(ReminderEntry.CONTENT_URI, listView.getId()), null, null);
 
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    private void deleteReminder(){
-        if(ContentUris.withAppendedId(ReminderEntry.CONTENT_URI,listView.getId()) !=null){
-            int rowDeleted = getContentResolver().delete(ContentUris.withAppendedId(ReminderEntry.CONTENT_URI,listView.getId()),null,null);
-
-            if(rowDeleted == 0){
-                Toast.makeText(getApplicationContext(),R.string.editor_delete_schedule_unsuccessful,Toast.LENGTH_SHORT).show();
+            if (rowDeleted == 0) {
+                Toast.makeText(getApplicationContext(), R.string.editor_delete_schedule_unsuccessful, Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the delete was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_delete_schedule_successful),
@@ -245,6 +244,7 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         reminderCursorAdapter.swapCursor(data);
+        AlarmStarter.init(this);
 
     }
 
@@ -252,5 +252,36 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
     public void onLoaderReset(Loader<Cursor> loader) {
         reminderCursorAdapter.swapCursor(null);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Util.scheduleJob(this);
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AlarmStarter.init(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AlarmStarter.init(this);
     }
 }
