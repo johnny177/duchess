@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         >
 
@@ -48,13 +48,14 @@
                     style="@style/EditorFieldStyle"
                     android:hint="@string/course_name_eg_microeconomics"
                     android:inputType="textCapWords"
-                    android:id="@+id/reminder_edit_course_name"/>
+                    android:id="@+id/reminder_edit_course_name"
+                    android:autofillHints="" />
 
                 <!--Type Spinner input-->
                 <Spinner
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
-                    android:paddingRight="@dimen/small_margin"
+                    android:paddingEnd="@dimen/small_margin"
                     android:spinnerMode="dropdown"
                     android:id="@+id/reminder_spinner_type"/>
             </LinearLayout>
@@ -71,13 +72,13 @@
             <!--Label-->
             <TextView
                 style="@style/CategoryStyle"
-                android:text="When to Remind"/>
+                android:text="@string/when_to_remind"/>
 
             <!--Input Fields-->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:padding="@dimen/smallest_padding"
                 android:orientation="vertical">
 
@@ -86,14 +87,39 @@
                     style="@style/EditorFieldStyle"
                     android:hint="@string/time"
                     android:inputType="time"
-                    android:id="@+id/reminder_edit_time"/>
+                    android:id="@+id/reminder_edit_time"
+                    android:autofillHints="" />
 
                 <!--Date EditField-->
                 <EditText
                     style="@style/EditorFieldStyle"
                     android:hint="@string/date"
                     android:inputType="date"
-                    android:id="@+id/reminder_edit_date"/>
+                    android:id="@+id/reminder_edit_date"
+                    android:autofillHints="" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_clock"
+                    android:onClick="TimeDialog"
+                    android:layout_margin="@dimen/smallest_padding"
+                    android:background="@color/colorPrimary"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="DateDialog"
+                    android:layout_margin="@dimen/smallest_padding"
+                    android:background="@color/colorPrimary"
+                    android:drawableStart="@drawable/ic_baseline_calendar_today_24"/>
+
             </LinearLayout>
         </LinearLayout>
 
@@ -122,6 +148,7 @@
                     android:layout_height="48dp"
                     android:backgroundTint="@color/colorPrimary"
                     android:paddingEnd="@dimen/small_margin"
+                    android:padding="@dimen/small_margin"
                     android:id="@+id/reminder_check_online"/>
 
             </LinearLayout>
@@ -181,7 +208,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:paddingEnd="@dimen/small_margin"
-
                     android:backgroundTint="@color/colorPrimary"
                     android:id="@+id/reminder_check_repeat"/>
 

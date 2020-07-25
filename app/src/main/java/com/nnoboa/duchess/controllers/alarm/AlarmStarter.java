@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
+import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.data.AlarmContract;
 
 import java.sql.Time;
@@ -30,6 +31,171 @@ public final class AlarmStarter {
     }
 
     public static void startReminderAlarm(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent reminderIntent = new Intent(context, AlarmReceiver.class);
+        String[] projection = {
+                AlarmContract.ReminderEntry._ID,
+                AlarmContract.ReminderEntry.COLUMN_COURSE_ID,
+                AlarmContract.ReminderEntry.COLUMN_COURSE_NAME,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_TYPE,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_TIME,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_MILLI,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_LOCATION,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_STATUS,
+                AlarmContract.ReminderEntry.COLUMN_REMINDER_NOTE
+
+        };
+
+        Cursor data = context.getContentResolver().query(AlarmContract.ReminderEntry.CONTENT_URI,projection,null,null,null);
+        while (data.moveToNext()) {
+            int
+                    idColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry._ID);
+
+            int
+                    courseIdColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_COURSE_ID);
+            int
+                    courseNameColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_COURSE_NAME);
+            int
+                    reminderTypeColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_TYPE);
+            int
+                    reminderTimeColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_TIME);
+            int
+                    reminderDateColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE);
+            int
+                    reminderLocColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_LOCATION);
+            int
+                    reminderRepeatColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT);
+            int
+                    reminderOnlineColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS);
+            int
+                    reminderIntervalColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL);
+            int
+                    reminderStatusColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_STATUS);
+            int
+                    reminderNoteColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_NOTE);
+            int
+                    milliColumnIndex =
+                    data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_MILLI);
+
+
+            long id = data.getLong(idColumnIndex);
+            String courseId = data.getString(courseIdColumnIndex);
+            String courseName = data.getString(courseNameColumnIndex);
+            String courseNote = data.getString(reminderNoteColumnIndex);
+            String reminderTime = data.getString(reminderTimeColumnIndex);
+            String reminderDate = data.getString(reminderDateColumnIndex);
+            String reminderLoc = data.getString(reminderLocColumnIndex);
+            long milliseconds = data.getLong(milliColumnIndex);
+            int reminderRepeatStat = data.getInt(reminderRepeatColumnIndex);
+            int reminderRepeatInterval = data.getInt(reminderIntervalColumnIndex);
+            int reminderStatus = data.getInt(reminderStatusColumnIndex);
+            int reminderType = data.getInt(reminderTypeColumnIndex);
+            int reminderOnlineStatus = data.getInt(reminderOnlineColumnIndex);
+
+            Uri
+                    currentReminderUri =
+                    ContentUris.withAppendedId(AlarmContract.ReminderEntry.CONTENT_URI, id);
+
+            reminderIntent.setData(currentReminderUri);
+            reminderIntent.putExtra("reminderId", id);
+            reminderIntent.putExtra("reminderCourseId", courseId);
+            reminderIntent.putExtra("reminderCourseName", courseName);
+
+            String typeText;
+
+            switch (reminderType) {
+                case AlarmContract.ReminderEntry.REMINDER_TYPE_LECTURES:
+                    typeText = context.getString(R.string.lectures);
+                    break;
+                case AlarmContract.ReminderEntry.REMINDER_TYPE_ASSIGNMENT:
+                    typeText = context.getString(R.string.assignment);
+                    break;
+                case AlarmContract.ReminderEntry.REMINDER_TYPE_IA:
+                    typeText = context.getString(R.string.interim_assessment);
+                    break;
+                case AlarmContract.ReminderEntry.REMINDER_TYPE_EXAMS:
+                    typeText = context.getString(R.string.exam);
+                    break;
+                case AlarmContract.ReminderEntry.REMINDER_TYPE_PROJECT:
+                    typeText = context.getString(R.string.project);
+                    break;
+                case AlarmContract.ReminderEntry.REMINDER_TYPE_QUIZ:
+                    typeText = context.getString(R.string.quiz);
+                    break;
+                default:
+                    typeText = context.getString(R.string.other);
+                    break;
+            }
+            reminderIntent.putExtra("reminderType", typeText);
+            reminderIntent.putExtra("reminderNote", courseNote);
+            reminderIntent.putExtra("reminderMilli", milliseconds);
+            reminderIntent.putExtra("repeatStatus",reminderRepeatStat);
+            reminderIntent.putExtra("reminderLoc", reminderLoc);
+            reminderIntent.putExtra("reminderOnlineStatus", reminderOnlineStatus);
+            reminderIntent.putExtra("currentRepeatInterval", reminderRepeatInterval);
+            reminderIntent.putExtra(ALARM_CATEGORY, ALARM_CATEGORY_REMINDER);
+
+            PendingIntent pendingIntent = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                pendingIntent =
+                        PendingIntent.getBroadcast(context, Math.toIntExact(id),reminderIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+
+            if (reminderStatus == AlarmContract.ReminderEntry.STATUS_IS_NOT_DONE) {
+                switch (reminderRepeatStat) {
+                    case AlarmContract.ReminderEntry.REMINDER_IS_NOT_REPEATING:
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, milliseconds, pendingIntent);
+                    Log.d("ScheduleAlarmStarter", "Non repeating Alarm " + id + reminderRepeatStat);
+                    break;
+
+                    case AlarmContract.ReminderEntry.REMINDER_IS_REPEATING:
+                        switch (reminderRepeatInterval) {
+//                            case AlarmContract.ReminderEntry.ONCE:
+//                                alarmManager.set(AlarmManager.RTC_WAKEUP, milliseconds, pendingIntent);
+//                                Log.d("ScheduleAlarmStarter", "Non repeating Alarm " + id);
+//                                break;
+                            case AlarmContract.ReminderEntry.INTERVAL_DAILY:
+                                setupRepeating(1, context, milliseconds, id, pendingIntent, alarmManager, AlarmContract.ReminderEntry.CONTENT_URI, AlarmContract.ReminderEntry.COLUMN_REMINDER_MILLI,
+                                        AlarmContract.ReminderEntry.COLUMN_REMINDER_TIME, AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE);
+                                Log.d("ReminderAlarmStarter", "Daily repeating Alarm " + id);
+
+                                break;
+                            case AlarmContract.ReminderEntry.INTERVAL_3_DAYS:
+                                setupRepeating(3, context, milliseconds, id, pendingIntent, alarmManager, AlarmContract.ReminderEntry.CONTENT_URI, AlarmContract.ReminderEntry.COLUMN_REMINDER_MILLI,
+                                        AlarmContract.ReminderEntry.COLUMN_REMINDER_TIME, AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE);
+                                Log.d("ReminderAlarmStarter", "3days repeating Alarm");
+
+                                break;
+                            case AlarmContract.ReminderEntry.INTERVAL_WEEKLY:
+                                setupRepeating(7, context, milliseconds, id, pendingIntent, alarmManager, AlarmContract.ReminderEntry.CONTENT_URI, AlarmContract.ReminderEntry.COLUMN_REMINDER_MILLI,
+                                        AlarmContract.ReminderEntry.COLUMN_REMINDER_TIME, AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE);
+                                Log.d("ReminderAlarmStarter", "Weekly repeating Alarm");
+
+                                break;
+                        }
+                        break;
+                }
+            }
+            Util.scheduleJob(context);
+
+        }
+        data.close();
 
     }
 
@@ -169,12 +335,12 @@ public final class AlarmStarter {
         cursor.close();
     }
 
-    public static void cancelAlarms(Context context, long id) {
+    public static void cancelAlarms(Context context, long id,Uri uri,String columnToUpdate,int doneValue ) {
         Uri
-                currentScheduleUri =
-                ContentUris.withAppendedId(AlarmContract.ScheduleEntry.CONTENT_URI, id);
+                currentUri =
+                ContentUris.withAppendedId(uri, id);
         ContentValues values = new ContentValues();
-        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DONE, AlarmContract.ScheduleEntry.DONE);
+        values.put(columnToUpdate, doneValue);
 
         AlarmManager alarmManager;
         Intent myIntent;
@@ -185,8 +351,8 @@ public final class AlarmStarter {
                 PendingIntent.getBroadcast(context, (int) id, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.cancel(pendingIntent);
 
-        context.getContentResolver().update(currentScheduleUri, values, null, null);
-        Log.d("ScheduleAlarmStarter", "Cancel Alarm and update db with " + currentScheduleUri + " " + Calendar.getInstance().getTimeInMillis() + milliseconds);
+        context.getContentResolver().update(currentUri, values, null, null);
+        Log.d("ScheduleAlarmStarter", "Cancel Alarm and update db with " + currentUri + " " + Calendar.getInstance().getTimeInMillis() + milliseconds);
 
 
     }
@@ -199,7 +365,7 @@ public final class AlarmStarter {
             alarmManager.set(AlarmManager.RTC_WAKEUP, milliseconds, pendingIntent);
             milliseconds = milliseconds + (60 * 60000 * 24 * Interval);
             Time time = new Time(milliseconds);
-            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
             timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             String newTime = timeFormat.format(time);
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");

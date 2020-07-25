@@ -236,6 +236,7 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
                 ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL,
                 ReminderEntry.COLUMN_REMINDER_STATUS,
                 ReminderEntry.COLUMN_REMINDER_NOTE};
+
         return new CursorLoader(this,
                 ReminderEntry.CONTENT_URI,
                 projection,null,null,null);
@@ -256,9 +257,10 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
 
     @Override
     protected void onStart() {
-        super.onStart();
         Util.scheduleJob(this);
         AlarmStarter.init(this);
+        super.onStart();
+
     }
 
     @Override

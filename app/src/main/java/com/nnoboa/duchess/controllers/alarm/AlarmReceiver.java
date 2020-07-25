@@ -27,11 +27,21 @@ public class AlarmReceiver extends BroadcastReceiver {
         String courseNote = intent.getExtras().getString("currentNote");
 
         String alarmCategory = intent.getExtras().getString(AlarmStarter.ALARM_CATEGORY);
-
 //        int state = intent.getExtras().getInt("currentState");
         int isRepeating = intent.getExtras().getInt("currentRepeatStat");
         long milliseconds = intent.getExtras().getLong("milli");
         String jobService = intent.getExtras().getString("fromJobService");
+
+        long reminderId = intent.getExtras().getLong("reminderId");
+        String reminderCourseId = intent.getExtras().getString("reminderCourseId");
+        String reminderCourseName = intent.getExtras().getString("reminderCourseName");
+        String reminderType = intent.getExtras().getString("reminderType");
+        String reminderNote = intent.getExtras().getString("reminderNote");
+        long reminderMilli = intent.getExtras().getLong("reminderMilli");
+        int repeatStatus = intent.getExtras().getInt("repeatStatus") ;
+        String reminderLoc = intent.getExtras().getString("reminderLoc");
+        int reminderOnlineStatus = intent.getExtras().getInt("reminderOnlineStatus");
+
 
         service = new Intent(context, RingTonePlayingService.class);
 
@@ -43,8 +53,19 @@ public class AlarmReceiver extends BroadcastReceiver {
         service.putExtra("fromJobService", jobService);
         service.putExtra("isRepeating", isRepeating);
         service.putExtra("milli", milliseconds);
-        service.putExtra("alarmCategory", alarmCategory);
+        service.putExtra(AlarmStarter.ALARM_CATEGORY, alarmCategory);
         service.setData(currentUri);
+        service.putExtra("reminderId",reminderId);
+        service.putExtra("reminderCourseId",reminderCourseId);
+        service.putExtra("reminderCourseName",reminderCourseName);
+        service.putExtra("reminderType",reminderType);
+        service.putExtra("reminderNote",reminderNote);
+        service.putExtra("reminderMilli",reminderMilli);
+        service.putExtra("reminderLoc",reminderLoc);
+        service.putExtra("repeatStatus",repeatStatus);
+        service.putExtra("reminderOnlineStatus",reminderOnlineStatus);
+
+
 
         Log.d("Receiver Received ", "" + id + courseId + courseName + courseTopic + courseNote);
 

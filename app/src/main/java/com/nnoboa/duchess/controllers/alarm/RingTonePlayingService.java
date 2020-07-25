@@ -5,6 +5,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,10 +18,12 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.nnoboa.duchess.R;
+import com.nnoboa.duchess.activities.editors.ReminderEditorActivity;
 import com.nnoboa.duchess.activities.editors.ScheduleEditorActivity;
 import com.nnoboa.duchess.data.AlarmContract;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class RingTonePlayingService extends Service {
 
@@ -61,7 +64,7 @@ public class RingTonePlayingService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Uri currentUri = intent.getData();
-        long _id = intent.getExtras().getLong("id");
+        long _id = Objects.requireNonNull(intent.getExtras()).getLong("id");
         String courseId = intent.getExtras().getString("courseId");
         String courseName = intent.getExtras().getString("courseName");
         String courseTopic = intent.getExtras().getString("currentTopic");
@@ -69,42 +72,94 @@ public class RingTonePlayingService extends Service {
         int isRepeating = intent.getExtras().getInt("isRepeating");
         long milliseconds = intent.getExtras().getLong("milli");
         String alarmCategory = intent.getExtras().getString(AlarmStarter.ALARM_CATEGORY);
+        long reminderId = intent.getExtras().getLong("reminderId");
+        String reminderCourseId = intent.getExtras().getString("reminderCourseId");
+        String reminderCourseName = intent.getExtras().getString("reminderCourseName");
+        String reminderType = intent.getExtras().getString("reminderType");
+        String reminderNote = intent.getExtras().getString("reminderNote");
+        long reminderMilli = intent.getExtras().getLong("reminderMilli");
+        String reminderLoc = intent.getExtras().getString("reminderLoc");
+        int reminderOnlineStatus = intent.getExtras().getInt("reminderOnlineStatus");
+        int repeatStatus = intent.getExtras().getInt("repeatStatus");
 
-        Intent contentIntent = new Intent(this, ScheduleEditorActivity.class);
-        contentIntent.setData(currentUri);
-        PendingIntent
-                contentPendingIntent =
-                PendingIntent.getActivity(this, (int) _id, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
         NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
 
-        if (!TextUtils.isEmpty(courseName)) {
-            nb.setContentTitle(courseId + " - " + courseName);
-        } else {
-            nb.setContentTitle(courseId);
+        assert alarmCategory != null;
+        if(alarmCategory.equals(AlarmStarter.ALARM_CATEGORY_REMINDER)){
+            Intent contentIntent = new Intent(this, ReminderEditorActivity.class);
+            Uri uri = ContentUris.withAppendedId(AlarmContract.ReminderEntry.CONTENT_URI, reminderId);
+            contentIntent.setData(uri);
+            PendingIntent contentPendingIntent = PendingIntent.getActivity(this, (int) reminderId, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            if (!TextUtils.isEmpty(reminderCourseName)) {
+                nb.setContentTitle(reminderCourseId + " - " + reminderCourseName);
+            } else {
+                nb.setContentTitle(reminderCourseId);
+            }
+            nb.setSmallIcon(R.drawable.add_reminder);
+
+            if (!TextUtils.isEmpty(courseNote)) {
+                nb.setContentText(reminderType + "\n\n" + reminderLoc + "\n\n" +reminderNote);
+            } else {
+                nb.setContentText(reminderType + "\n\n" + reminderLoc);
+            }
+
+            nb.setTicker(reminderCourseId);
+            nb.setContentIntent(contentPendingIntent);
+            if(reminderOnlineStatus == AlarmContract.ReminderEntry.REMINDER_IS_ONLINE){
+                assert reminderLoc != null;
+                Intent browserIntent = openLink(reminderLoc);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this,(int) reminderId,browserIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                nb.addAction(R.drawable.ic_baseline_web_24,getString(R.string.open_site),pendingIntent);
+            }
+            notificationHelper.getManager().notify((int) reminderId, nb.build());
+
+            if (repeatStatus == AlarmContract.ReminderEntry.REMINDER_IS_NOT_REPEATING  && Calendar.getInstance().getTimeInMillis() >= reminderMilli) {
+                AlarmStarter.cancelAlarms(getApplicationContext(), reminderId, AlarmContract.ReminderEntry
+                        .CONTENT_URI, AlarmContract.ReminderEntry.COLUMN_REMINDER_STATUS, AlarmContract.ReminderEntry.STATUS_IS_DONE);
+                Log.d("Cancelling Alarm ", "Current time " + Calendar.getInstance().getTimeInMillis() + " - " + reminderMilli + " Repeat Status " + repeatStatus);
+            }
         }
 
-        nb.setSmallIcon(R.drawable.add_reminder);
+        else if(alarmCategory.equals(AlarmStarter.ALARM_CATEGORY_SCHEDULE)) {
+            Intent contentIntent = new Intent(this, ScheduleEditorActivity.class);
+            contentIntent.setData(currentUri);
+            PendingIntent contentPendingIntent = PendingIntent.getActivity(this, (int) _id, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (!TextUtils.isEmpty(courseNote)) {
-            nb.setContentText(courseTopic + "\n" + courseNote);
-        } else {
-            nb.setContentText(courseTopic);
-        }
 
-        nb.setTicker(courseId);
-        nb.setContentIntent(contentPendingIntent);
-        notificationHelper.getManager().notify((int) _id, nb.build());
+            if (!TextUtils.isEmpty(courseName)) {
+                nb.setContentTitle(courseId + " - " + courseName);
+            } else {
+                nb.setContentTitle(courseId);
+            }
+
+            nb.setSmallIcon(R.drawable.add_schedule96);
+
+            if (!TextUtils.isEmpty(courseNote)) {
+                nb.setContentText(courseTopic + "\n" + courseNote);
+            } else {
+                nb.setContentText(courseTopic);
+            }
+
+            nb.setTicker(courseId);
+            nb.setContentIntent(contentPendingIntent);
+            notificationHelper.getManager().notify((int) _id, nb.build());
 
 //        startForeground((int) _id,nb.build());
-        if (isRepeating == AlarmContract.ScheduleEntry.REPEAT_OFF && Calendar.getInstance().getTimeInMillis() >= milliseconds) {
-            AlarmStarter.cancelAlarms(getApplicationContext(), _id);
-            Log.d("Cancelling Alarm ", "Current time " + Calendar.getInstance().getTimeInMillis() + " - " + milliseconds + " isRepeating " + isRepeating);
+            if (isRepeating == AlarmContract.ScheduleEntry.REPEAT_OFF && Calendar.getInstance().getTimeInMillis() >= milliseconds) {
+                AlarmStarter.cancelAlarms(getApplicationContext(), _id, AlarmContract.ScheduleEntry.CONTENT_URI, AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DONE, AlarmContract.ScheduleEntry.DONE);
+                Log.d("Cancelling Alarm ", "Current time " + Calendar.getInstance().getTimeInMillis() + " - " + milliseconds + " isRepeating " + isRepeating);
+            }
 
         }
-
-
         Log.d("RingtonePlayingService ", "Notification started & cancel " + _id);
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    public Intent openLink(String url){
+        if (!url.startsWith("https://") && !url.startsWith("http://")){
+            url = "http://" + url;
+        }
+        return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
     }
 }

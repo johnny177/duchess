@@ -26,7 +26,6 @@
                 android:id="@+id/reminder_course_id_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
                 android:fontFamily="@font/amita_bold"
                 android:textAlignment="center"
                 android:textAllCaps="true"
@@ -55,7 +54,8 @@
             android:id="@+id/reminder_note_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small_margin"
+            android:layout_margin="@dimen/smaller_margin"
+            android:textAlignment="center"
             android:fontFamily="@font/archivo_black"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="#000F12" />
@@ -95,17 +95,6 @@
             android:textColorHighlight="#283593"
             android:textStyle="italic"
             android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/reminder_interval"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_repeat"
-            android:fontFamily="sans-serif-condensed"
-            android:textAppearance="?android:textAppearanceMediumInverse"
-            android:textColor="#AEB6BD"
-            android:layout_margin="8dp"/>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -135,6 +124,34 @@
                 android:layout_margin="@dimen/smaller_margin"/>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/smaller_margin">
+
+            <TextView
+                android:id="@+id/reminder_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?android:textAppearanceMediumInverse"
+                android:fontFamily="sans-serif-condensed"
+                android:textColor="#000000"
+                android:layout_margin="@dimen/smaller_margin"/>
+            <TextView
+                android:id="@+id/reminder_interval"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_repeat"
+                android:fontFamily="sans-serif-condensed"
+                android:textAppearance="?android:textAppearanceMediumInverse"
+                android:textColor="#AEB6BD"
+                android:layout_margin="8dp"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

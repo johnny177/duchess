@@ -89,7 +89,6 @@ public class ScheduleCursorAdapter extends CursorAdapter {
                 cardView.setCardBackgroundColor(R.color.material_on_background_disabled);
                 break;
             case ScheduleEntry.NOT_DONE:
-//                cardView.setCardBackgroundColor(colorStateList);
                 break;
         }
 

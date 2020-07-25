@@ -30,7 +30,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
+
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -77,6 +84,7 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder_editor);
+        AndroidThreeTen.init(this);
 
         currentReminderUri = getIntent().getData();
 
@@ -84,8 +92,6 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
 
         findView();
 
-        reminderDate = DateDialog();
-        reminderTime = TimeDialog();
 
         if(currentReminderUri == null){
             getSupportActionBar().setTitle("Add a reminder");
@@ -201,6 +207,8 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         }else {
             repeatReminder = ReminderEntry.REMINDER_IS_NOT_REPEATING;
             repeatReminderInterval = ReminderEntry.ONCE;
+            intervalSpinner.setEnabled(false);
+            intervalSpinner.setSelection(0);
         }
 
         repeatCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -305,8 +313,8 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         String courseName = courseNameEdit.getText().toString().trim();
         String reminderLoc= locationEdit.getText().toString().trim();
         String reminderNote = noteEdit.getText().toString().trim();
-        String reminderTime = TimeDialog().trim();
-        String reminderDate = DateDialog().trim();
+        String reminderTime = timeEdit.getText().toString().trim();
+        String reminderDate = dateEdit.getText().toString().trim();
 
         setupCheckers();
 
@@ -363,6 +371,8 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         values.put(ReminderEntry.COLUMN_REMINDER_TYPE,type);
 
         values.put(ReminderEntry.COLUMN_REMINDER_NOTE,reminderNote);
+
+        values.put(ReminderEntry.COLUMN_REMINDER_MILLI,Millis(reminderTime,reminderDate));
 
 
         if(currentReminderUri == null){
@@ -481,6 +491,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
                 ReminderEntry.COLUMN_REMINDER_TYPE,
                 ReminderEntry.COLUMN_REMINDER_TIME,
                 ReminderEntry.COLUMN_REMINDER_DATE,
+                ReminderEntry.COLUMN_REMINDER_MILLI,
                 ReminderEntry.COLUMN_REMINDER_LOCATION,
                 ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS,
                 ReminderEntry.COLUMN_REMINDER_REPEAT,
@@ -500,7 +511,6 @@ public boolean onCreateOptionsMenu(Menu menu) {
             /*
               get the column index
              */
-
             int courseIdColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_COURSE_ID);
             int courseNameColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_COURSE_NAME);
             int reminderTypeColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_TYPE);
@@ -512,8 +522,10 @@ public boolean onCreateOptionsMenu(Menu menu) {
             int reminderIntervalColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL);
             int reminderStatusColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_STATUS);
             int reminderNoteColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_NOTE);
+            int reinderMilliColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_MILLI);
 
             String courseId = data.getString(courseIdColumnIndex);
+            long milli = data.getLong(reinderMilliColumnIndex);
             String courseName = data.getString(courseNameColumnIndex);
             String courseNote = data.getString(reminderNoteColumnIndex);
             String reminderTime = data.getString(reminderTimeColumnIndex);
@@ -607,6 +619,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
             }else {
                 doneCheckBox.setChecked(false);
             }
+
         }
 
     }
@@ -626,81 +639,95 @@ public boolean onCreateOptionsMenu(Menu menu) {
         locationEdit.setText("");
     }
 
-    public String DateDialog(){
+    public void DateDialog(View view){
+        Calendar calendar = Calendar.getInstance();
 
-        dateEdit.setOnClickListener(new View.OnClickListener() {
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+
+        //launching the date dialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(ReminderEditorActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
-
-                //launching the date dialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(ReminderEditorActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
-                        if(month <10 & dayOfMonth>10){
-                            String nDate = year+"/0"+(month+1)+"/"+dayOfMonth;
-                            dateEdit.setText(nDate);
-                        }
-                        else if(dayOfMonth <10 & month>10){
-                            String nDate = year+"/"+(month+1)+"/0"+dayOfMonth;
-                            dateEdit.setText(nDate);
-                        }
-                        else if(month <10 & dayOfMonth <10){
-                            String nDate = year+"/0"+(month+1)+"/0"+dayOfMonth;
-                            dateEdit.setText(nDate);
-                        }
-                        else{
-                            String nDate = year+"/"+(month+1)+"/"+dayOfMonth;
-                            dateEdit.setText(nDate);
-                        }
-                    }
-
-                },year,month,day);
-                datePickerDialog.show();
+            public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
+                if (month < 10 & dayOfMonth > 10) {
+                    String nDate = year + "/0" + (month + 1) + "/" + dayOfMonth;
+                    dateEdit.setText(nDate);
+                } else if (dayOfMonth < 10 & month > 10) {
+                    String nDate = year + "/" + (month + 1) + "/0" + dayOfMonth;
+                    dateEdit.setText(nDate);
+                } else if (month < 10 & dayOfMonth < 10) {
+                    String nDate = year + "/0" + (month + 1) + "/0" + dayOfMonth;
+                    dateEdit.setText(nDate);
+                } else {
+                    String nDate = year + "/" + (month + 1) + "/" + dayOfMonth;
+                    dateEdit.setText(nDate);
+                }
             }
-        });
-        return dateEdit.getText().toString();
+
+        },year,month,day);
+        datePickerDialog.show();
     }
 
     //get the time from the time dialog frag
-    public String TimeDialog() {
-        timeEdit.setOnClickListener(new View.OnClickListener() {
+    public void TimeDialog(View view) {
+        final Calendar calendar = Calendar.getInstance();
+        int Hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int Minute = calendar.get(Calendar.MINUTE);
+
+        //launching the timepicker dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(ReminderEditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+
             @Override
-            public void onClick(View v) {
-                final Calendar calendar = Calendar.getInstance();
-                int Hour = calendar.get(Calendar.HOUR_OF_DAY);
-                int Minute = calendar.get(Calendar.MINUTE);
-
-                //launching the timepicker dialog
-                TimePickerDialog timePickerDialog = new TimePickerDialog(ReminderEditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        if (hourOfDay < 10 & minute > 10) {
-                            String mTime = "0" + hourOfDay + ":" + minute;
-                            timeEdit.setText(mTime);
-                        } else if (hourOfDay > 10 & minute < 10) {
-                            String mTime = hourOfDay + ":0" + minute;
-                            timeEdit.setText(mTime);
-                        } else if (hourOfDay < 10 & minute < 10) {
-                            String mTime = "0" + hourOfDay + ":0" + minute;
-                            timeEdit.setText(mTime);
-                        } else {
-                            String mTime = hourOfDay + ":" + minute;
-                            timeEdit.setText(mTime);
-                        }
-
-
-                    }
-                }, Hour, Minute, true);
-
-                timePickerDialog.show();
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                if (hourOfDay < 10 && minute > 10) {
+                    String mTime = "0" + hourOfDay + ":" + minute;
+                    timeEdit.setText(mTime);
+                } else if (hourOfDay > 10 && minute < 10) {
+                    String mTime = hourOfDay + ":0" + minute;
+                    timeEdit.setText(mTime);
+                } else if (hourOfDay < 10 && minute < 10) {
+                    String mTime = "0" + hourOfDay + ":0" + minute;
+                    timeEdit.setText(mTime);
+                } else if(hourOfDay>0 && minute >0){
+                    String mTime = hourOfDay + ":" + minute;
+                    timeEdit.setText(mTime);
+                }
             }
-        });
-        return timeEdit.getText().toString();
+        }, Hour, Minute, true);
+
+        timePickerDialog.show();
+    }
+
+    public long Millis(String time,String date){
+        long milli;
+        try{
+            String DateTime = date+" 0"+time+":00";
+
+
+//        DateTime = DateTime.replace(" ","T").replace("/","-");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
+
+            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+            OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+
+            milli = offsetDateTime.toInstant().toEpochMilli();
+            Log.i("Millis"," "+milli);}
+        catch (org.threeten.bp.format.DateTimeParseException e ){
+            String DateTime = date+" "+time+":00";
+
+
+//        DateTime = DateTime.replace(" ","T").replace("/","-");
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
+
+            ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+            OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
+
+            milli = offsetDateTime.toInstant().toEpochMilli();
+            Log.i("Millis"," "+milli);
+        }
+        return milli;
     }
 }
