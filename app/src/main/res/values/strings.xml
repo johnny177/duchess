@@ -75,4 +75,9 @@
     <string name="past_due">Past due: </string>
     <string name="open_site">Open Site</string>
     <string name="when_to_remind">When to Remind</string>
+    <string name="open_pdf_document_list">.pdf files</string>
+    <string name="open_doc_amp_docx_document_list"><![CDATA[.doc & .docx files]]></string>
+    <string name="open_xlsx_xls_amp_csv_document_list"><![CDATA[.xlsx, .xls & .csv files]]></string>
+    <string name="open_ppt_amp_pptx_document_list"><![CDATA[.ppt & .pptx files]]></string>
+
 </resources>

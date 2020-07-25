@@ -1,15 +1,20 @@
 package com.nnoboa.duchess;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jakewharton.threetenabp.AndroidThreeTen;
+import com.nnoboa.duchess.activities.PDFActivity;
 import com.nnoboa.duchess.controllers.alarm.AlarmStarter;
 import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.fragments.AlarmFragment;
@@ -20,6 +25,8 @@ import com.nnoboa.duchess.fragments.WebFragment;
 public class MainActivity extends AppCompatActivity {
 
     Context context;
+    public static int REQUEST_PERMISSIONS = 1;
+    boolean boolean_permission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         AlarmStarter.init(context);
 
         Util.scheduleJob(this);
+        fn_permission();
 
 
 //        QueryDb();
@@ -105,5 +113,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         AlarmStarter.init(this);
+    }
+
+    private void fn_permission() {
+        if ((ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+
+            if ((ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE))) {
+            } else {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_PERMISSIONS);
+
+            }
+        }
     }
 }

@@ -2,13 +2,182 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/reading_background"
     android:layout_height="match_parent"
     tools:context=".fragments.AlarmFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <!-- TODO: Update blank fragment layout -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/smallest_padding"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent">
+
+            <FrameLayout
+                android:id="@+id/open_pdf"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/readbackground2"
+                android:layout_gravity="center_vertical"
+                android:foregroundGravity="center_vertical"
+                android:layout_margin="16dp"
+                android:focusable="true"
+                android:clickable="true"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:padding="@dimen/smallest_padding"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@drawable/pdf_64"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:gravity="center_vertical"
+                    android:layout_margin="@dimen/smallest_padding"
+                    android:text="@string/open_pdf_document_list"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textStyle="normal|bold"
+                    tools:ignore="RtlCompat" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/open_doc"
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/readbackground2"
+                android:layout_gravity="center_vertical"
+                android:foregroundGravity="center_vertical"
+                android:layout_margin="16dp"
+                android:clickable="true"
+                android:layout_below="@id/open_pdf"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@drawable/ms_word_64"
+                    android:drawablePadding="8dp"
+                    android:layout_margin="@dimen/smallest_padding"
+                    android:fontFamily="sans-serif-black"
+                    android:gravity="center_vertical"
+                    android:text="@string/open_doc_amp_docx_document_list"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textStyle="normal|bold" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/open_xls"
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/readbackground2"
+                android:layout_gravity="center_vertical"
+                android:foregroundGravity="center_vertical"
+                android:layout_margin="16dp"
+                android:layout_below="@id/open_doc"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@drawable/ms_excel_64"
+                    android:drawablePadding="8dp"
+                    android:drawableStart="@drawable/ms_excel_64"
+                    android:fontFamily="sans-serif-black"
+                    android:gravity="center_vertical"
+                    android:layout_margin="@dimen/smallest_padding"
+                    android:text="@string/open_xlsx_xls_amp_csv_document_list"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textStyle="normal|bold"
+                    tools:ignore="RtlCompat" />
+
+            </FrameLayout>
+            <FrameLayout
+                android:id="@+id/open_ppt"
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@drawable/readbackground2"
+                android:layout_gravity="center_vertical"
+                android:foregroundGravity="center_vertical"
+                android:layout_margin="16dp"
+                android:layout_below="@id/open_xls"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:drawableLeft="@drawable/ms_pptx_64"
+                    android:drawableStart="@drawable/ms_pptx_64"
+                    android:drawablePadding="8dp"
+                    android:fontFamily="sans-serif-black"
+                    android:gravity="center_vertical"
+                    android:layout_margin="@dimen/smallest_padding"
+                    android:text="@string/open_ppt_amp_pptx_document_list"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textStyle="normal|bold"
+                    tools:ignore="RtlHardcoded" />
+
+            </FrameLayout>
+
+            <!--       <FrameLayout-->
+            <!--           android:id="@+id/open_all"-->
+            <!--           android:layout_centerInParent="true"-->
+            <!--           android:layout_width="match_parent"-->
+            <!--           android:layout_height="100dp"-->
+            <!--           android:background="@drawable/readbackground2"-->
+            <!--           android:layout_gravity="center_vertical"-->
+            <!--           android:foregroundGravity="center_vertical"-->
+            <!--           android:layout_margin="16dp"-->
+            <!--           android:layout_below="@id/open_ppt"-->
+            <!--           android:clickable="true"-->
+            <!--           android:gravity="center_vertical">-->
+
+            <!--           <TextView-->
+            <!--               android:textAppearance="@style/TextAppearance.AppCompat.Large"-->
+            <!--               android:layout_width="match_parent"-->
+            <!--               android:layout_height="match_parent"-->
+            <!--               android:layout_gravity="center_vertical"-->
+
+            <!--               android:drawablePadding="8dp"-->
+            <!--               android:fontFamily="sans-serif-black"-->
+            <!--               android:gravity="center_vertical"-->
+            <!--               android:layout_margin="@dimen/side_margin"-->
+            <!--               android:text="OPEN ALL DOCUMENTS LIST"-->
+            <!--               android:textAlignment="center"-->
+            <!--               android:textColor="#000000"-->
+            <!--               android:textStyle="normal|bold" />-->
+
+            <!--       </FrameLayout>-->
+
+
+
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>
