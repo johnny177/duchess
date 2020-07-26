@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nnoboa.duchess">
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -14,21 +17,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.PDFActivity"/>
-        <activity android:name=".activities.editors.ReminderEditorActivity"
+        <activity android:name=".activities.BlogActivity"></activity>
+        <activity android:name=".activities.PDFActivity" />
+        <activity
+            android:name=".activities.editors.ReminderEditorActivity"
             android:label="Add a Reminder"
-            android:parentActivityName=".activities.ReminderActivity">
-        </activity>
+            android:parentActivityName=".activities.ReminderActivity"></activity>
         <activity
             android:name=".activities.editors.ScheduleEditorActivity"
             android:label="Add a Schedule"
             android:parentActivityName=".activities.ScheduleActivity" />
-        <activity android:name=".activities.ScheduleActivity"
+        <activity
+            android:name=".activities.ScheduleActivity"
             android:label="Schedules"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".activities.ReminderActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".activities.ReminderActivity"
             android:label="Reminders"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,24 +47,28 @@
             android:name=".data.AlarmProvider"
             android:authorities="com.nnoboa.duchess.schedules"
             android:exported="false" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <provider
-            android:authorities="com.nnoboa.duchess.flash"
             android:name=".data.FlashProvider"
-            android:exported="false"/>
+            android:authorities="com.nnoboa.duchess.flash"
+            android:exported="false" />
 
         <service
             android:name=".controllers.alarm.AlarmJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service android:name=".controllers.alarm.RingTonePlayingService"
-            android:enabled="true"/>
+        <service
+            android:name=".controllers.alarm.RingTonePlayingService"
+            android:enabled="true" />
 
-        <receiver android:name=".controllers.alarm.AlarmReceiver"/>
-        <service android:name=".controllers.alarm.JobRingtonePlayingService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <receiver android:name=".controllers.alarm.AlarmReceiver" />
+
+        <service
+            android:name=".controllers.alarm.JobRingtonePlayingService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -70,6 +80,5 @@
                 android:resource="@xml/provider_paths" />
         </provider>
     </application>
-
 
 </manifest>

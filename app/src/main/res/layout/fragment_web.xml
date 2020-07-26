@@ -2,13 +2,57 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#E4C4D3"
     android:layout_height="match_parent"
-    tools:context=".fragments.AlarmFragment">
+    tools:context=".fragments.WebFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+      >
+
+        <LinearLayout
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <!--Reminder textview-->
+            <TextView
+                android:id="@+id/blog_web_text"
+                android:padding="@dimen/small_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/smaller_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginRight="@dimen/smaller_margin"
+                android:background="@drawable/web_types_background"
+                android:fontFamily="@font/abril_fatface"
+                android:text="@string/glance_learning_blog_post"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+            <!--chat textView-->
+            <TextView
+                android:id="@+id/chat_web_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/smaller_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginRight="@dimen/smaller_margin"
+                android:background="@drawable/web_types_background"
+                android:fontFamily="@font/abril_fatface"
+                android:padding="@dimen/small_margin"
+                android:text="@string/chatroom"
+                android:layout_alignParentBottom="true"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </FrameLayout>

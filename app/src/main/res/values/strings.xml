@@ -79,5 +79,9 @@
     <string name="open_doc_amp_docx_document_list"><![CDATA[.doc & .docx files]]></string>
     <string name="open_xlsx_xls_amp_csv_document_list"><![CDATA[.xlsx, .xls & .csv files]]></string>
     <string name="open_ppt_amp_pptx_document_list"><![CDATA[.ppt & .pptx files]]></string>
+    <string name="try_turning_on_mobile_data_wifi_or_better_network">Try turning on Mobile data, Wifi or Better Network</string>
+    <string name="no_internet_connection_or_bad_network">No Internet Connection or Bad Network</string>
+    <string name="chatroom">ChatRoom</string>
+    <string name="glance_learning_blog_post">Glance Learning Blog Post</string>
 
 </resources>

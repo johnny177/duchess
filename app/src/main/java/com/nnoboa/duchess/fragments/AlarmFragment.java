@@ -51,8 +51,7 @@ public class AlarmFragment extends Fragment {
     private void findViews(View view){
         reminderText = view.findViewById(R.id.reminder_alarm_text);
         scheduleText = view.findViewById(R.id.schedule_alarm_text);
-    }
-
+    } 
     /**
      * start Respective intents
      */
