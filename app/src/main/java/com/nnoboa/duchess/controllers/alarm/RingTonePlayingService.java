@@ -8,6 +8,9 @@ import android.app.Service;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -16,6 +19,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.activities.editors.ReminderEditorActivity;
@@ -84,6 +88,13 @@ public class RingTonePlayingService extends Service {
 
         NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
         NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Uri ringtone = Uri.parse(preferences.getString("general_ringtone",null));
+        Log.d("RingtonePlayingService","Notification "+ringtone);
+        nb.setSound(ringtone);
+//        MediaPlayer ringTone = MediaPlayer.create(getApplicationContext(),ringtone);
+//        ringTone.start();
+        AlarmRingTone.playAudio(getApplicationContext(),ringtone);
 
         assert alarmCategory != null;
         if(alarmCategory.equals(AlarmStarter.ALARM_CATEGORY_REMINDER)){
@@ -143,7 +154,10 @@ public class RingTonePlayingService extends Service {
 
             nb.setTicker(courseId);
             nb.setContentIntent(contentPendingIntent);
-            notificationHelper.getManager().notify((int) _id, nb.build());
+            nb.setSound(ringtone, AudioManager.STREAM_ALARM);
+            Notification notification = nb.build();
+            notification.sound = ringtone;
+            notificationHelper.getManager().notify((int) _id, notification);
 
 //        startForeground((int) _id,nb.build());
             if (isRepeating == AlarmContract.ScheduleEntry.REPEAT_OFF && Calendar.getInstance().getTimeInMillis() >= milliseconds) {

@@ -30,6 +30,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
+    implementation 'androidx.preference:preference:1.1.1'
     testImplementation 'junit:junit:4.12'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.3'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

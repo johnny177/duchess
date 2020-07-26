@@ -32,6 +32,8 @@ import android.widget.Toast;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
+import com.nnoboa.duchess.controllers.alarm.AlarmRingTone;
+import com.nnoboa.duchess.controllers.alarm.AlarmStarter;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.OffsetDateTime;
@@ -729,5 +731,22 @@ public boolean onCreateOptionsMenu(Menu menu) {
             Log.i("Millis"," "+milli);
         }
         return milli;
+    }
+
+    @Override
+    protected void onStart() {
+        if(AlarmRingTone.isplayingAudio==true){
+            AlarmRingTone.stopAudio();
+        }
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (AlarmRingTone.isplayingAudio == true){
+            AlarmRingTone.stopAudio();
+        }
+        AlarmStarter.init(this);
     }
 }

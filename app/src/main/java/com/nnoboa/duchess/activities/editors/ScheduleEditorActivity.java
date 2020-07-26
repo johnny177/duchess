@@ -32,6 +32,7 @@ import androidx.core.app.NavUtils;
 
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
+import com.nnoboa.duchess.controllers.alarm.AlarmRingTone;
 import com.nnoboa.duchess.controllers.alarm.AlarmStarter;
 import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.data.AlarmContract;
@@ -706,6 +707,9 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
         super.onStart();
         Util.scheduleJob(this);
         AlarmStarter.init(this);
+        if (AlarmRingTone.isplayingAudio == true){
+            AlarmRingTone.stopAudio();
+        }
     }
 
     @Override
@@ -717,6 +721,9 @@ public class ScheduleEditorActivity extends AppCompatActivity implements android
     @Override
     protected void onResume() {
         super.onResume();
+        if (AlarmRingTone.isplayingAudio == true){
+            AlarmRingTone.stopAudio();
+        }
         AlarmStarter.init(this);
     }
 }

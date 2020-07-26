@@ -1,0 +1,77 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="General Settings">
+
+        <SwitchPreference
+            app:key="general_ringtone_check"
+            android:title="Set General Ringtone"
+            app:defaultValue="true"
+            app:useSimpleSummaryProvider="true"/>
+
+        <Preference
+            android:dependency="general_ringtone_check"
+            app:key="general_ringtone"
+            app:title="Ringtone"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="None"
+            />
+
+
+        <DropDownPreference
+            android:title="Theme"
+            app:key="theme"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="Default"/>
+        <DropDownPreference
+            app:title="Font Family"
+            app:key="font_family"
+            app:defaultValue="Default Font Type"
+            app:useSimpleSummaryProvider="true"/>
+
+<!--        <ListPreference-->
+<!--            app:defaultValue="reply"-->
+<!--            app:entries="@array/reply_entries"-->
+<!--            app:entryValues="@array/reply_values"-->
+<!--            app:key="reply"-->
+<!--            app:title="@string/reply_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Alarm Settings">
+        <EditTextPreference
+            app:key="reminder_ringtone"
+            app:title="Select your preferred Ringtone"
+            app:useSimpleSummaryProvider="true" />
+        <DropDownPreference
+            android:title="Reminder Theme"
+            app:key="reminder_theme"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="Default Theme"/>
+        <EditTextPreference
+            app:key="schedule_ringtone"
+            app:title="Select your preferred Ringtone"
+            app:useSimpleSummaryProvider="true" />
+        <DropDownPreference
+            android:title="Schedule Theme"
+            app:key="schedule_theme"
+            app:useSimpleSummaryProvider="true"
+            app:defaultValue="Default Theme"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Flash Settings">
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Web Settings">
+        <DropDownPreference
+            app:title="Blog Post Title Font Style"
+            app:key="blog_font"
+            app:useSimpleSummaryProvider="true"/>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

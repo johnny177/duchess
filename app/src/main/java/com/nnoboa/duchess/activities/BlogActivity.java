@@ -67,6 +67,7 @@ public class BlogActivity extends AppCompatActivity implements android.app.Loade
 
                 new BlogLoader(BlogActivity.this, builder.toString());
                 Toast.makeText(BlogActivity.this, "Refreshing",Toast.LENGTH_SHORT).show();
+                recreate();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
