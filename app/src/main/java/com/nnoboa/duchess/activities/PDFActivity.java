@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.controllers.adapters.PDFAdapter;
 
@@ -31,12 +32,13 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class PDFActivity extends AppCompatActivity {
-    ListView lv_pdf;
     public static ArrayList<File> fileList = new ArrayList<File>();
-    PDFAdapter obj_adapter;
     public static int REQUEST_PERMISSIONS = 1;
+    ListView lv_pdf;
+    PDFAdapter obj_adapter;
     boolean boolean_permission;
-    File dir;String type = "";
+    File dir;
+    String type = "";
     String type1 = "";
     String type2 = "";
 
@@ -49,15 +51,15 @@ public class PDFActivity extends AppCompatActivity {
         fn_permission();
         Intent intent = getIntent();
         type = intent.getStringExtra("type").toUpperCase();
-        getSupportActionBar().setTitle(type+" List of Files");
+        getSupportActionBar().setTitle(type + " List of Files");
         lv_pdf.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if(scrollY<oldScrollY){
-                    if(getSupportActionBar().isShowing()){
+                if (scrollY < oldScrollY) {
+                    if (getSupportActionBar().isShowing()) {
                         getSupportActionBar().hide();
                     }
-                }else {
+                } else {
                     getSupportActionBar().show();
                 }
             }
@@ -83,7 +85,7 @@ public class PDFActivity extends AppCompatActivity {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
                 final int checkedCount = lv_pdf.getCheckedItemCount();
-                mode.setTitle(checkedCount+" Selected");
+                mode.setTitle(checkedCount + " Selected");
                 obj_adapter.toggleSelection(position);
                 lv_pdf.setBackgroundColor(R.color.clean_color);
             }
@@ -91,7 +93,7 @@ public class PDFActivity extends AppCompatActivity {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 
-                mode.getMenuInflater().inflate(R.menu.schedule_menu,menu);
+                mode.getMenuInflater().inflate(R.menu.schedule_menu, menu);
                 return true;
 
             }
@@ -103,12 +105,14 @@ public class PDFActivity extends AppCompatActivity {
 
             @Override
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.delete:
                         SparseBooleanArray sparseBooleanArray = obj_adapter.getSelectedIds();
-                        for(int i =(sparseBooleanArray.size()-1); i >0; i--){
-                            if(sparseBooleanArray.valueAt(i)){
-                                File selectedFiles = obj_adapter.getItem(sparseBooleanArray.keyAt(i));
+                        for (int i = (sparseBooleanArray.size() - 1); i > 0; i--) {
+                            if (sparseBooleanArray.valueAt(i)) {
+                                File
+                                        selectedFiles =
+                                        obj_adapter.getItem(sparseBooleanArray.keyAt(i));
                                 if ((ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
 
                                     if ((ActivityCompat.shouldShowRequestPermissionRationale(PDFActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
@@ -117,14 +121,15 @@ public class PDFActivity extends AppCompatActivity {
                                                 REQUEST_PERMISSIONS);
 
                                     }
-                                }else {
-                                obj_adapter.remove(selectedFiles);}
+                                } else {
+                                    obj_adapter.remove(selectedFiles);
+                                }
                             }
                             mode.finish();
                             return true;
                         }
-                        default:
-                            return false;
+                    default:
+                        return false;
 
                 }
 
@@ -155,9 +160,9 @@ public class PDFActivity extends AppCompatActivity {
 
                     boolean booleanpdf = false;
 
-                    if(listFile[i].getName().endsWith(type)||listFile[i].getName().endsWith(type1)
-                            ||listFile[i].getName().endsWith(type2)){
-                        lv_pdf.scrollTo(0,fileList.size());
+                    if (listFile[i].getName().endsWith(type) || listFile[i].getName().endsWith(type1)
+                            || listFile[i].getName().endsWith(type2)) {
+                        lv_pdf.scrollTo(0, fileList.size());
                         for (int j = 0; j < fileList.size(); j++) {
                             if (fileList.get(j).getName().equals(listFile[i].getName())) {
                                 booleanpdf = true;
@@ -173,11 +178,12 @@ public class PDFActivity extends AppCompatActivity {
 
                         }
                     }
-                    }
+                }
             }
         }
         return fileList;
     }
+
     private void fn_permission() {
         if ((ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
 
@@ -218,21 +224,22 @@ public class PDFActivity extends AppCompatActivity {
         }
     }
 
-    public void open_File(String path){
+    public void open_File(String path) {
         File file = new File(path);
-        Uri uri = FileProvider.getUriForFile(PDFActivity.this,getApplicationContext().getPackageName()+".provider",file);
+        Uri
+                uri =
+                FileProvider.getUriForFile(PDFActivity.this, getApplicationContext().getPackageName() + ".provider", file);
         Intent intent2 = new Intent(Intent.ACTION_VIEW);
-        if(file.getName().endsWith(".pdf")){
-            intent2.setDataAndType(uri,"application/pdf");
-        }
-        else if(file.getName().endsWith(".docx")|file.getName().endsWith(".doc")){
-        intent2.setDataAndType(uri, "application/msword");}
-        else  if(file.getName().endsWith(".pptx")|file.getName().endsWith(".ppt")){
-            intent2.setDataAndType(uri, "application/vnd.ms-powerpoint");}
-        else  if(file.getName().endsWith(".xlsx")|file.getName().endsWith(".xls")|file.getName().endsWith(".csv")){
-            intent2.setDataAndType(uri, "application/vnd.ms-excel");}
-        else{
-            intent2.setDataAndType(uri,"*/*");
+        if (file.getName().endsWith(".pdf")) {
+            intent2.setDataAndType(uri, "application/pdf");
+        } else if (file.getName().endsWith(".docx") | file.getName().endsWith(".doc")) {
+            intent2.setDataAndType(uri, "application/msword");
+        } else if (file.getName().endsWith(".pptx") | file.getName().endsWith(".ppt")) {
+            intent2.setDataAndType(uri, "application/vnd.ms-powerpoint");
+        } else if (file.getName().endsWith(".xlsx") | file.getName().endsWith(".xls") | file.getName().endsWith(".csv")) {
+            intent2.setDataAndType(uri, "application/vnd.ms-excel");
+        } else {
+            intent2.setDataAndType(uri, "*/*");
         }
         intent2.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent2.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -242,7 +249,7 @@ public class PDFActivity extends AppCompatActivity {
         } catch (ActivityNotFoundException e) {
         }
 
-}
+    }
 
     @Override
     protected void onDestroy() {

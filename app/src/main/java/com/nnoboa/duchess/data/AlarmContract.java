@@ -10,16 +10,16 @@ import android.provider.BaseColumns;
  */
 
 
-public final class AlarmContract  {
-
-    private AlarmContract(){}
+public final class AlarmContract {
 
     public static final String CONTENT_AUTHORITY = "com.nnoboa.duchess.schedules";
-    public  static final Uri BASE_CONTENT_URI = Uri.parse("content://"+CONTENT_AUTHORITY);
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     public static final String PATH_SCHEDULES = "schedules";
     public static final String PATH_REMINDERS = "reminders";
+    private AlarmContract() {
+    }
 
-    public static final class ScheduleEntry implements BaseColumns{
+    public static final class ScheduleEntry implements BaseColumns {
 
         /**
          * The MIME type of the {@link #CONTENT_URI} for a list of  schedules
@@ -27,9 +27,9 @@ public final class AlarmContract  {
 
         public static final String CONTENT_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
-                        "/"+
+                        "/" +
                         CONTENT_AUTHORITY +
-                        "/"+ PATH_SCHEDULES;
+                        "/" + PATH_SCHEDULES;
 
         /**
          * The MIME type of the {@link #CONTENT_URI} for a single schedule
@@ -37,15 +37,17 @@ public final class AlarmContract  {
 
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE +
-                        "/"+
-                        CONTENT_AUTHORITY+
-                        "/"+PATH_SCHEDULES;
+                        "/" +
+                        CONTENT_AUTHORITY +
+                        "/" + PATH_SCHEDULES;
 
         /**
          * The content uri to access the schedule data in the provider
          */
 
-        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_SCHEDULES);
+        public static final Uri
+                CONTENT_URI =
+                Uri.withAppendedPath(BASE_CONTENT_URI, PATH_SCHEDULES);
 
         public static final String TABLE_NAME = "schedules";
 
@@ -57,7 +59,7 @@ public final class AlarmContract  {
         public static final String COLUMN_SCHEDULE_DATE = "date";
         public static final String COLUMN_SCHEDULE_MILLI = "milliseconds";
         public static final String COLUMN_SCHEDULE_REPEAT = "repeat";
-        public static final String COLUMN_SCHEDULE_INTERVAL= "interval";
+        public static final String COLUMN_SCHEDULE_INTERVAL = "interval";
         public static final String COLUMN_SCHEDULE_NOTE = "note";
         public static final String COLUMN_SCHEDULE_DONE = "done";
 
@@ -83,7 +85,7 @@ public final class AlarmContract  {
         public static final int DONE = 1000;
         public static final int NOT_DONE = 1001;
 
-        public static boolean isValidInterval(int interval){
+        public static boolean isValidInterval(int interval) {
             return interval == SCHEDULE_REPEAT_DAILY || interval == SCHEDULE_NOT_REPEATING
                     || interval == SCHEDULE_REPEAT_MONTHLY ||
                     interval == SCHEDULE_REPEAT_WEEKLY;
@@ -100,9 +102,9 @@ public final class AlarmContract  {
 
         public static final String CONTENT_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE +
-                        "/"+
+                        "/" +
                         CONTENT_AUTHORITY +
-                        "/"+ PATH_REMINDERS;
+                        "/" + PATH_REMINDERS;
 
         /**
          * The MIME type of the {@link #CONTENT_URI} for a single reminder
@@ -110,14 +112,16 @@ public final class AlarmContract  {
 
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE +
-                        "/"+
-                        CONTENT_AUTHORITY+
-                        "/"+PATH_REMINDERS;
+                        "/" +
+                        CONTENT_AUTHORITY +
+                        "/" + PATH_REMINDERS;
 
         /**
          * The content uri to access the schedule data in the provider
          */
-        public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_REMINDERS);
+        public static final Uri
+                CONTENT_URI =
+                Uri.withAppendedPath(BASE_CONTENT_URI, PATH_REMINDERS);
 
 
         /**
@@ -145,7 +149,7 @@ public final class AlarmContract  {
 
 
         /**
-         *The possible reminder status
+         * The possible reminder status
          */
         public static final int STATUS_IS_DONE = 1;
         public static final int STATUS_IS_NOT_DONE = 0;
@@ -187,17 +191,17 @@ public final class AlarmContract  {
         /**
          * class to check the validity of the values
          */
-        public static boolean isValidType(int type){
+        public static boolean isValidType(int type) {
             return type == REMINDER_TYPE_PROJECT || type == REMINDER_TYPE_ASSIGNMENT
                     || type == REMINDER_TYPE_LECTURES || type == REMINDER_TYPE_EXAMS
                     || type == REMINDER_TYPE_QUIZ || type == REMINDER_TYPE_OTHER;
         }
 
-        public static boolean isValidStatus(int status){
+        public static boolean isValidStatus(int status) {
             return status == STATUS_IS_DONE || status == STATUS_IS_NOT_DONE;
         }
 
-        public static boolean isValidInterval(int interval){
+        public static boolean isValidInterval(int interval) {
             return interval == ONCE || interval == INTERVAL_DAILY
                     || interval == INTERVAL_WEEKLY || interval == INTERVAL_3_DAYS;
         }

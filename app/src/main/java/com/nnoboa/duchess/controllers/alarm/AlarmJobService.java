@@ -12,6 +12,7 @@ public class AlarmJobService extends JobService {
     private static AlarmManager alarmManager;
 
     private static ContentValues values = new ContentValues();
+
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d(TAG, "Job Started");

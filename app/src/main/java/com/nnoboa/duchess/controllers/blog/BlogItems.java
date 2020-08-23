@@ -24,20 +24,20 @@ public class BlogItems {
 
 
     /**
-     * @param auth is the name of the author of the blog
+     * @param auth  is the name of the author of the blog
      * @param title is the title of the blog
-     * @param url is the url of the blog post
-     * @param time is the date and time the blog was published
+     * @param url   is the url of the blog post
+     * @param time  is the date and time the blog was published
      */
 
-    public BlogItems(String auth, String title, String url, String time){
+    public BlogItems(String auth, String title, String url, String time) {
         mAuthor = auth;
         mTitle = title;
         mDatePublished = time;
         mUrl = url;
     }
 
-    public BlogItems(){
+    public BlogItems() {
 
     }
 

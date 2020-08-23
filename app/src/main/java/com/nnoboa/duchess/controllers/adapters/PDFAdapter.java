@@ -28,6 +28,7 @@ public class PDFAdapter extends ArrayAdapter<File> {
 
 
     }
+
     @Override
     public int getItemViewType(int position) {
         return position;
@@ -44,29 +45,28 @@ public class PDFAdapter extends ArrayAdapter<File> {
 
 
     @Override
-    public void remove(File file){
+    public void remove(File file) {
         file.delete();
         al_pdf.remove(getPosition(file));
         notifyDataSetChanged();
     }
 
-    public void toggleSelection(int position){
-        selectView(position,!sparseBooleanArray.get(position));
+    public void toggleSelection(int position) {
+        selectView(position, !sparseBooleanArray.get(position));
 
     }
 
-    public void selectView(int position, boolean value){
-        if(value){
-            sparseBooleanArray.put(position,value);
-        }
-        else {
+    public void selectView(int position, boolean value) {
+        if (value) {
+            sparseBooleanArray.put(position, value);
+        } else {
             sparseBooleanArray.delete(position);
 
             notifyDataSetChanged();
         }
     }
 
-    public void removeSelection(){
+    public void removeSelection() {
         sparseBooleanArray = new SparseBooleanArray();
         notifyDataSetChanged();
     }
@@ -85,13 +85,13 @@ public class PDFAdapter extends ArrayAdapter<File> {
 
         }
 
-        if(al_pdf.get(position).getName().endsWith(".ppt")||al_pdf.get(position).getName().endsWith(".pptx")){
+        if (al_pdf.get(position).getName().endsWith(".ppt") || al_pdf.get(position).getName().endsWith(".pptx")) {
             viewHolder.tv_image.setImageResource(R.drawable.ms_pptx_64);
-        }else if(al_pdf.get(position).getName().endsWith(".doc")||al_pdf.get(position).getName().endsWith(".docx")){
+        } else if (al_pdf.get(position).getName().endsWith(".doc") || al_pdf.get(position).getName().endsWith(".docx")) {
             viewHolder.tv_image.setImageResource(R.drawable.ms_word_64);
-        }else if(al_pdf.get(position).getName().endsWith(".xlsx")||al_pdf.get(position).getName().endsWith(".csv")||al_pdf.get(position).getName().endsWith(".xls")){
-            viewHolder.tv_image.setImageResource(R.drawable.ms_excel_64);}
-        else if (al_pdf.get(position).getName().endsWith(".txt")){
+        } else if (al_pdf.get(position).getName().endsWith(".xlsx") || al_pdf.get(position).getName().endsWith(".csv") || al_pdf.get(position).getName().endsWith(".xls")) {
+            viewHolder.tv_image.setImageResource(R.drawable.ms_excel_64);
+        } else if (al_pdf.get(position).getName().endsWith(".txt")) {
             viewHolder.tv_image.setImageResource(R.drawable.ms_word_64);
         }
 
@@ -100,15 +100,15 @@ public class PDFAdapter extends ArrayAdapter<File> {
 
     }
 
+    public SparseBooleanArray getSelectedIds() {
+        return sparseBooleanArray;
+
+    }
+
     public class ViewHolder {
 
         TextView tv_filename;
         ImageView tv_image;
-    }
-
-    public  SparseBooleanArray getSelectedIds(){
-        return sparseBooleanArray;
-
     }
 
 }

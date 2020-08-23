@@ -1,9 +1,9 @@
 package com.nnoboa.duchess.controllers.blog;
 
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
-import android.content.AsyncTaskLoader;
 
 import java.util.List;
 
@@ -19,11 +19,12 @@ public class BlogLoader extends AsyncTaskLoader<List<BlogItems>> {
 
     /**
      * Constructs a new {@link BlogLoader}
+     *
      * @param context of the activity
-     * @param url to load data from
+     * @param url     to load data from
      * @return
      */
-    public BlogLoader(Context context, String url){
+    public BlogLoader(Context context, String url) {
         super(context);
         mUrl = url;
     }

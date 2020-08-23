@@ -1,7 +1,10 @@
 package com.nnoboa.duchess.fragments;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.activities.PDFActivity;
+import com.nnoboa.duchess.controllers.ThemeUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,7 +31,20 @@ public class DocFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_doc, container, false);
+        View view = inflater.inflate(R.layout.fragment_doc, container, false);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int selected = Integer.parseInt(preferences.getString("theme", "1"));
+        switch (selected) {
+            case ThemeUtils.DARK_THEME:
+                view.setBackgroundColor(Color.BLACK);
+                break;
+            case ThemeUtils.DEFAULT_THEME:
+                view.setBackground(getContext().getDrawable(R.drawable.reading_background));
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + selected);
+        }
 
         FrameLayout openPdf = view.findViewById(R.id.open_pdf);
         FrameLayout openDoc = view.findViewById(R.id.open_doc);
@@ -39,9 +56,9 @@ public class DocFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), PDFActivity.class);
-                intent.putExtra("type","pdf");
-                intent.putExtra("type1","pdf");
-                intent.putExtra("type2","pdf");
+                intent.putExtra("type", "pdf");
+                intent.putExtra("type1", "pdf");
+                intent.putExtra("type2", "pdf");
                 startActivity(intent);
             }
         });
@@ -51,9 +68,9 @@ public class DocFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), PDFActivity.class);
-                intent.putExtra("type","docx");
-                intent.putExtra("type1","doc");
-                intent.putExtra("type2","doc");
+                intent.putExtra("type", "docx");
+                intent.putExtra("type1", "doc");
+                intent.putExtra("type2", "doc");
 
                 startActivity(intent);
             }
@@ -63,9 +80,9 @@ public class DocFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), PDFActivity.class);
-                intent.putExtra("type",".xlsx");
-                intent.putExtra("type1","csv");
-                intent.putExtra("type2","xls");
+                intent.putExtra("type", ".xlsx");
+                intent.putExtra("type1", "csv");
+                intent.putExtra("type2", "xls");
 
                 startActivity(intent);
             }
@@ -75,9 +92,9 @@ public class DocFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), PDFActivity.class);
-                intent.putExtra("type",".pptx");
-                intent.putExtra("type1","ppt");
-                intent.putExtra("type2","odt");
+                intent.putExtra("type", ".pptx");
+                intent.putExtra("type1", "ppt");
+                intent.putExtra("type2", "odt");
 
                 startActivity(intent);
             }
@@ -91,8 +108,6 @@ public class DocFragment extends Fragment {
 //                startActivity(intent);
 //            }
 //        });
-
-
 
 
         return view;

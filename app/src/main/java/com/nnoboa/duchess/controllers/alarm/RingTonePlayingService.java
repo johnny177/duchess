@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
@@ -89,19 +88,23 @@ public class RingTonePlayingService extends Service {
         NotificationHelper notificationHelper = new NotificationHelper(getApplicationContext());
         NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Uri ringtone = Uri.parse(preferences.getString("general_ringtone",null));
-        Log.d("RingtonePlayingService","Notification "+ringtone);
+        Uri ringtone = Uri.parse(preferences.getString("general_ringtone", null));
+        Log.d("RingtonePlayingService", "Notification " + ringtone);
         nb.setSound(ringtone);
 //        MediaPlayer ringTone = MediaPlayer.create(getApplicationContext(),ringtone);
 //        ringTone.start();
-        AlarmRingTone.playAudio(getApplicationContext(),ringtone);
+        AlarmRingTone.playAudio(getApplicationContext(), ringtone);
 
         assert alarmCategory != null;
-        if(alarmCategory.equals(AlarmStarter.ALARM_CATEGORY_REMINDER)){
+        if (alarmCategory.equals(AlarmStarter.ALARM_CATEGORY_REMINDER)) {
             Intent contentIntent = new Intent(this, ReminderEditorActivity.class);
-            Uri uri = ContentUris.withAppendedId(AlarmContract.ReminderEntry.CONTENT_URI, reminderId);
+            Uri
+                    uri =
+                    ContentUris.withAppendedId(AlarmContract.ReminderEntry.CONTENT_URI, reminderId);
             contentIntent.setData(uri);
-            PendingIntent contentPendingIntent = PendingIntent.getActivity(this, (int) reminderId, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent
+                    contentPendingIntent =
+                    PendingIntent.getActivity(this, (int) reminderId, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             if (!TextUtils.isEmpty(reminderCourseName)) {
                 nb.setContentTitle(reminderCourseId + " - " + reminderCourseName);
             } else {
@@ -110,32 +113,34 @@ public class RingTonePlayingService extends Service {
             nb.setSmallIcon(R.drawable.add_reminder);
 
             if (!TextUtils.isEmpty(courseNote)) {
-                nb.setContentText(reminderType + "\n\n" + reminderLoc + "\n\n" +reminderNote);
+                nb.setContentText(reminderType + "\n\n" + reminderLoc + "\n\n" + reminderNote);
             } else {
                 nb.setContentText(reminderType + "\n\n" + reminderLoc);
             }
 
             nb.setTicker(reminderCourseId);
             nb.setContentIntent(contentPendingIntent);
-            if(reminderOnlineStatus == AlarmContract.ReminderEntry.REMINDER_IS_ONLINE){
+            if (reminderOnlineStatus == AlarmContract.ReminderEntry.REMINDER_IS_ONLINE) {
                 assert reminderLoc != null;
                 Intent browserIntent = openLink(reminderLoc);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this,(int) reminderId,browserIntent,PendingIntent.FLAG_UPDATE_CURRENT);
-                nb.addAction(R.drawable.ic_baseline_web_24,getString(R.string.open_site),pendingIntent);
+                PendingIntent
+                        pendingIntent =
+                        PendingIntent.getActivity(this, (int) reminderId, browserIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                nb.addAction(R.drawable.ic_baseline_web_24, getString(R.string.open_site), pendingIntent);
             }
             notificationHelper.getManager().notify((int) reminderId, nb.build());
 
-            if (repeatStatus == AlarmContract.ReminderEntry.REMINDER_IS_NOT_REPEATING  && Calendar.getInstance().getTimeInMillis() >= reminderMilli) {
+            if (repeatStatus == AlarmContract.ReminderEntry.REMINDER_IS_NOT_REPEATING && Calendar.getInstance().getTimeInMillis() >= reminderMilli) {
                 AlarmStarter.cancelAlarms(getApplicationContext(), reminderId, AlarmContract.ReminderEntry
                         .CONTENT_URI, AlarmContract.ReminderEntry.COLUMN_REMINDER_STATUS, AlarmContract.ReminderEntry.STATUS_IS_DONE);
                 Log.d("Cancelling Alarm ", "Current time " + Calendar.getInstance().getTimeInMillis() + " - " + reminderMilli + " Repeat Status " + repeatStatus);
             }
-        }
-
-        else if(alarmCategory.equals(AlarmStarter.ALARM_CATEGORY_SCHEDULE)) {
+        } else if (alarmCategory.equals(AlarmStarter.ALARM_CATEGORY_SCHEDULE)) {
             Intent contentIntent = new Intent(this, ScheduleEditorActivity.class);
             contentIntent.setData(currentUri);
-            PendingIntent contentPendingIntent = PendingIntent.getActivity(this, (int) _id, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent
+                    contentPendingIntent =
+                    PendingIntent.getActivity(this, (int) _id, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
             if (!TextUtils.isEmpty(courseName)) {
@@ -170,8 +175,8 @@ public class RingTonePlayingService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public Intent openLink(String url){
-        if (!url.startsWith("https://") && !url.startsWith("http://")){
+    public Intent openLink(String url) {
+        if (!url.startsWith("https://") && !url.startsWith("http://")) {
             url = "http://" + url;
         }
         return new Intent(Intent.ACTION_VIEW, Uri.parse(url));

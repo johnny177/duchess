@@ -9,4 +9,11 @@
     <!--Color for extended buttons-->
     <color name="colorFloatTint">#00BFA5</color>
     <color name="reminder_default_background">#CEFAF4</color>
+
+    <!--Color for black theme-->
+    <color name="colorPrimaryDarkTheme">#2E2D2D</color>
+    <color name="colorPrimaryDarkDarkTheme">#000000</color>
+    <color name="colorAccentDarkTheme">#020C06</color>
+    <color name="frag_default_background_color">#C5F3D8</color>
+    <color name="web_frag_background">#E4C4D3</color>
 </resources>

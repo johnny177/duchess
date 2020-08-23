@@ -10,7 +10,7 @@
         android:id="@+id/frag_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#C5F3D8"
+        android:background="@color/frag_default_background_color"
         android:layout_above="@id/bottom_nav"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

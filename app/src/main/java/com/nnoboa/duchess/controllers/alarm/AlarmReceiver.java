@@ -11,6 +11,7 @@ import java.util.Objects;
 
 public class AlarmReceiver extends BroadcastReceiver {
     Intent service;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Util.scheduleJob(context);
@@ -38,7 +39,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String reminderType = intent.getExtras().getString("reminderType");
         String reminderNote = intent.getExtras().getString("reminderNote");
         long reminderMilli = intent.getExtras().getLong("reminderMilli");
-        int repeatStatus = intent.getExtras().getInt("repeatStatus") ;
+        int repeatStatus = intent.getExtras().getInt("repeatStatus");
         String reminderLoc = intent.getExtras().getString("reminderLoc");
         int reminderOnlineStatus = intent.getExtras().getInt("reminderOnlineStatus");
 
@@ -55,16 +56,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         service.putExtra("milli", milliseconds);
         service.putExtra(AlarmStarter.ALARM_CATEGORY, alarmCategory);
         service.setData(currentUri);
-        service.putExtra("reminderId",reminderId);
-        service.putExtra("reminderCourseId",reminderCourseId);
-        service.putExtra("reminderCourseName",reminderCourseName);
-        service.putExtra("reminderType",reminderType);
-        service.putExtra("reminderNote",reminderNote);
-        service.putExtra("reminderMilli",reminderMilli);
-        service.putExtra("reminderLoc",reminderLoc);
-        service.putExtra("repeatStatus",repeatStatus);
-        service.putExtra("reminderOnlineStatus",reminderOnlineStatus);
-
+        service.putExtra("reminderId", reminderId);
+        service.putExtra("reminderCourseId", reminderCourseId);
+        service.putExtra("reminderCourseName", reminderCourseName);
+        service.putExtra("reminderType", reminderType);
+        service.putExtra("reminderNote", reminderNote);
+        service.putExtra("reminderMilli", reminderMilli);
+        service.putExtra("reminderLoc", reminderLoc);
+        service.putExtra("repeatStatus", repeatStatus);
+        service.putExtra("reminderOnlineStatus", reminderOnlineStatus);
 
 
         Log.d("Receiver Received ", "" + id + courseId + courseName + courseTopic + courseNote);
@@ -75,7 +75,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         } else {
             context.startService(service);
         }
-
 
 
 //        context.startService(service);

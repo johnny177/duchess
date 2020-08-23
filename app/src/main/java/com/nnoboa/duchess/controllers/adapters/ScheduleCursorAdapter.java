@@ -27,7 +27,9 @@ public class ScheduleCursorAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_list, parent, false);
+        View
+                view =
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.schedule_list, parent, false);
         return view;
     }
 
@@ -55,7 +57,9 @@ public class ScheduleCursorAdapter extends CursorAdapter {
         int
                 courseNameColumnIndex =
                 cursor.getColumnIndex(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME);
-        int courseTopicColumnIndex = cursor.getColumnIndexOrThrow(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC);
+        int
+                courseTopicColumnIndex =
+                cursor.getColumnIndexOrThrow(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC);
         int
                 courseTimeColumnIndex =
                 cursor.getColumnIndex(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TIME);
@@ -92,7 +96,7 @@ public class ScheduleCursorAdapter extends CursorAdapter {
                 break;
         }
 
-        switch(currentInterval){
+        switch (currentInterval) {
             case ScheduleEntry.SCHEDULE_NOT_REPEATING:
                 scheduleInterval.setText(R.string.not_repeating);
                 break;

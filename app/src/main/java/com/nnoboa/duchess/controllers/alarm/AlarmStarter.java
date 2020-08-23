@@ -21,11 +21,12 @@ import java.util.TimeZone;
 public final class AlarmStarter {
 
     public static String ALARM_CATEGORY_SCHEDULE = "scheduleAlarm";
-    static long milliseconds;
     public static String ALARM_CATEGORY = "alarmCategory";
     public static String ALARM_CATEGORY_REMINDER = "reminderAlarm";
+    static long milliseconds;
 
     public static void init(Context context) {
+
         startScheduleAlarm(context);
         startReminderAlarm(context);
     }
@@ -50,7 +51,9 @@ public final class AlarmStarter {
 
         };
 
-        Cursor data = context.getContentResolver().query(AlarmContract.ReminderEntry.CONTENT_URI,projection,null,null,null);
+        Cursor
+                data =
+                context.getContentResolver().query(AlarmContract.ReminderEntry.CONTENT_URI, projection, null, null, null);
         while (data.moveToNext()) {
             int
                     idColumnIndex =
@@ -145,7 +148,7 @@ public final class AlarmStarter {
             reminderIntent.putExtra("reminderType", typeText);
             reminderIntent.putExtra("reminderNote", courseNote);
             reminderIntent.putExtra("reminderMilli", milliseconds);
-            reminderIntent.putExtra("repeatStatus",reminderRepeatStat);
+            reminderIntent.putExtra("repeatStatus", reminderRepeatStat);
             reminderIntent.putExtra("reminderLoc", reminderLoc);
             reminderIntent.putExtra("reminderOnlineStatus", reminderOnlineStatus);
             reminderIntent.putExtra("currentRepeatInterval", reminderRepeatInterval);
@@ -154,15 +157,15 @@ public final class AlarmStarter {
             PendingIntent pendingIntent = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 pendingIntent =
-                        PendingIntent.getBroadcast(context, Math.toIntExact(id),reminderIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent.getBroadcast(context, Math.toIntExact(id), reminderIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             }
 
             if (reminderStatus == AlarmContract.ReminderEntry.STATUS_IS_NOT_DONE) {
                 switch (reminderRepeatStat) {
                     case AlarmContract.ReminderEntry.REMINDER_IS_NOT_REPEATING:
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, milliseconds, pendingIntent);
-                    Log.d("ScheduleAlarmStarter", "Non repeating Alarm " + id + reminderRepeatStat);
-                    break;
+                        alarmManager.set(AlarmManager.RTC_WAKEUP, milliseconds, pendingIntent);
+                        Log.d("ScheduleAlarmStarter", "Non repeating Alarm " + id + reminderRepeatStat);
+                        break;
 
                     case AlarmContract.ReminderEntry.REMINDER_IS_REPEATING:
                         switch (reminderRepeatInterval) {
@@ -335,7 +338,7 @@ public final class AlarmStarter {
         cursor.close();
     }
 
-    public static void cancelAlarms(Context context, long id,Uri uri,String columnToUpdate,int doneValue ) {
+    public static void cancelAlarms(Context context, long id, Uri uri, String columnToUpdate, int doneValue) {
         Uri
                 currentUri =
                 ContentUris.withAppendedId(uri, id);

@@ -31,14 +31,13 @@ import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.data.AlarmContract.ReminderEntry;
 import com.nnoboa.duchess.data.AlarmDbHelper;
 
-public class ReminderActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
+public class ReminderActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
+    final int REMINDER_LOADER_ID = 00;
     ExtendedFloatingActionButton addReminder;
     ListView listView;
     ReminderCursorAdapter reminderCursorAdapter;
     View emptyView;
-
-    final int REMINDER_LOADER_ID = 00;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +53,15 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
         startEditorIntent();
 
         listView.setEmptyView(emptyView);
-
+        AlarmStarter.init(this);
         listView.setAdapter(reminderCursorAdapter);
 
         listView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if(scrollY<oldScrollY){
+                if (scrollY < oldScrollY) {
                     addReminder.shrink();
-                }else {
+                } else {
                     addReminder.extend();
                 }
             }
@@ -71,16 +70,18 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editReminderIntent = new Intent(ReminderActivity.this, ReminderEditorActivity.class);
+                Intent
+                        editReminderIntent =
+                        new Intent(ReminderActivity.this, ReminderEditorActivity.class);
 
-                Uri currentReminderUri = ContentUris.withAppendedId(ReminderEntry.CONTENT_URI,id);
+                Uri currentReminderUri = ContentUris.withAppendedId(ReminderEntry.CONTENT_URI, id);
 
                 editReminderIntent.setData(currentReminderUri);
                 startActivity(editReminderIntent);
             }
         });
 
-        loaderManager.initLoader(REMINDER_LOADER_ID,null,this);
+        loaderManager.initLoader(REMINDER_LOADER_ID, null, this);
 
 //        displayDatabaseInfo();
 
@@ -90,23 +91,25 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
      * Find the respective views
      */
 
-    private void findViews(){
+    private void findViews() {
         addReminder = findViewById(R.id.add_reminder);
         listView = findViewById(R.id.reminder_list);
         emptyView = findViewById(R.id.rempty_view);
-        reminderCursorAdapter =new ReminderCursorAdapter(this,null);
+        reminderCursorAdapter = new ReminderCursorAdapter(this, null);
     }
 
     /**
      * Start the editor activity
      */
 
-    private void startEditorIntent(){
+    private void startEditorIntent() {
 
         addReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editorIntent = new Intent(ReminderActivity.this, ReminderEditorActivity.class);
+                Intent
+                        editorIntent =
+                        new Intent(ReminderActivity.this, ReminderEditorActivity.class);
                 startActivity(editorIntent);
             }
         });
@@ -126,33 +129,33 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
 //    }
 
     @SuppressWarnings("unused")
-    private void insertDummyData(){
-        AlarmDbHelper dbHelper= new AlarmDbHelper(this);
+    private void insertDummyData() {
+        AlarmDbHelper dbHelper = new AlarmDbHelper(this);
 
         //noinspection unused
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
 
-        values.put(ReminderEntry.COLUMN_COURSE_ID,"MATH 350");
-        values.put(ReminderEntry.COLUMN_COURSE_NAME,"DIFFERENTIAL EQUATIONS");
-        values.put(ReminderEntry.COLUMN_REMINDER_TYPE,ReminderEntry.REMINDER_TYPE_LECTURES);
-        values.put(ReminderEntry.COLUMN_REMINDER_TIME,"19:00");
+        values.put(ReminderEntry.COLUMN_COURSE_ID, "MATH 350");
+        values.put(ReminderEntry.COLUMN_COURSE_NAME, "DIFFERENTIAL EQUATIONS");
+        values.put(ReminderEntry.COLUMN_REMINDER_TYPE, ReminderEntry.REMINDER_TYPE_LECTURES);
+        values.put(ReminderEntry.COLUMN_REMINDER_TIME, "19:00");
         values.put(ReminderEntry.COLUMN_REMINDER_DATE, "09/07/2020");
-        values.put(ReminderEntry.COLUMN_REMINDER_MILLI,"34523736524");
-        values.put(ReminderEntry.COLUMN_REMINDER_LOCATION,"NNB");
+        values.put(ReminderEntry.COLUMN_REMINDER_MILLI, "34523736524");
+        values.put(ReminderEntry.COLUMN_REMINDER_LOCATION, "NNB");
         values.put(ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS, ReminderEntry.REMINDER_IS_OFFLINE);
-        values.put(ReminderEntry.COLUMN_REMINDER_REPEAT,ReminderEntry.REMINDER_IS_NOT_REPEATING);
-        values.put(ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL,ReminderEntry.ONCE);
+        values.put(ReminderEntry.COLUMN_REMINDER_REPEAT, ReminderEntry.REMINDER_IS_NOT_REPEATING);
+        values.put(ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL, ReminderEntry.ONCE);
 
-        Uri rowID = getContentResolver().insert(ReminderEntry.CONTENT_URI,values);
-        Toast.makeText(ReminderActivity.this,"New row added "+rowID,Toast.LENGTH_SHORT).show();
+        Uri rowID = getContentResolver().insert(ReminderEntry.CONTENT_URI, values);
+        Toast.makeText(ReminderActivity.this, "New row added " + rowID, Toast.LENGTH_SHORT).show();
 
 
     }
 
-    private void clearDatabase(){
-        getContentResolver().delete(ReminderEntry.CONTENT_URI,null,null);
+    private void clearDatabase() {
+        getContentResolver().delete(ReminderEntry.CONTENT_URI, null, null);
     }
 
     @Override
@@ -163,12 +166,12 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_insert_dummy_data:
                 insertDummyData();
                 return true;
             case R.id.action_delete_all:
-                clearDatabase();
+                showDeleteConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -216,7 +219,7 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
                 Toast.makeText(this, getString(R.string.editor_delete_schedule_successful),
                         Toast.LENGTH_SHORT).show();
             }
-            Log.d("Editor Deleted","Row Deleted "+rowDeleted);
+            Log.d("Editor Deleted", "Row Deleted " + rowDeleted);
         }
     }
 
@@ -241,7 +244,7 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
 
         return new CursorLoader(this,
                 ReminderEntry.CONTENT_URI,
-                projection,null,null,null);
+                projection, null, null, null);
     }
 
     @Override
@@ -267,33 +270,37 @@ public class ReminderActivity extends AppCompatActivity implements android.app.L
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onPause();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onDestroy();
     }
 
     private void showDeleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
         // for the positive and negative buttons on the dialog.
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.delete_all_confirmation);
+        builder.setMessage(getString(R.string.delete_all_confirmation));
         builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked the "Delete" button, so delete the reminder.

@@ -1,7 +1,11 @@
 package com.nnoboa.duchess.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.activities.ReminderActivity;
 import com.nnoboa.duchess.activities.ScheduleActivity;
+import com.nnoboa.duchess.controllers.ThemeUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,11 +31,21 @@ public class AlarmFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        View view  = inflater.inflate(R.layout.fragment_alarm, container, false);
+        View view = inflater.inflate(R.layout.fragment_alarm, container, false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int selected = Integer.parseInt(preferences.getString("theme", "1"));
+        switch (selected) {
+            case ThemeUtils.DARK_THEME:
+                view.setBackgroundColor(Color.BLACK);
+                break;
+            case ThemeUtils.DEFAULT_THEME:
+                view.setBackgroundColor(getContext().getColor(R.color.frag_default_background_color));
+                break;
+        }
 
         //call the method to findviews
         findViews(view);
@@ -48,15 +63,16 @@ public class AlarmFragment extends Fragment {
      * Method to find the resp views
      */
 
-    private void findViews(View view){
+    private void findViews(View view) {
         reminderText = view.findViewById(R.id.reminder_alarm_text);
         scheduleText = view.findViewById(R.id.schedule_alarm_text);
-    } 
+    }
+
     /**
      * start Respective intents
      */
 
-    private void startReminderIntent(View view){
+    private void startReminderIntent(View view) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,7 +83,7 @@ public class AlarmFragment extends Fragment {
 
     }
 
-    private void startScheduleIntent(View view){
+    private void startScheduleIntent(View view) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

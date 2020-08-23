@@ -1,8 +1,10 @@
 package com.nnoboa.duchess.activities;
 
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -29,16 +31,13 @@ import com.nnoboa.duchess.data.AlarmContract;
 
 public class ScheduleActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
+    final int SCHEDULE_LOADER_ID = 0;
     ExtendedFloatingActionButton addSchedule;
-//    TextView displayText;
+    //    TextView displayText;
     android.app.LoaderManager loaderManager;
     GridView scheduleList;
     ScheduleCursorAdapter scheduleCursorAdapter;
     View emptyView;
-
-    final int SCHEDULE_LOADER_ID = 0;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +47,6 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
 
         loaderManager = getLoaderManager();
         Util.scheduleJob(this);
-
-
-
-
 
 
         findViews();
@@ -64,9 +59,9 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
         scheduleList.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if(scrollY < oldScrollY){
+                if (scrollY < oldScrollY) {
                     addSchedule.shrink();
-                }else{
+                } else {
                     addSchedule.extend();
                 }
             }
@@ -75,9 +70,13 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
         scheduleList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent editScheduleIntent = new Intent(ScheduleActivity.this, ScheduleEditorActivity.class);
+                Intent
+                        editScheduleIntent =
+                        new Intent(ScheduleActivity.this, ScheduleEditorActivity.class);
 
-                Uri currentScheduleUri = ContentUris.withAppendedId(AlarmContract.ScheduleEntry.CONTENT_URI,id);
+                Uri
+                        currentScheduleUri =
+                        ContentUris.withAppendedId(AlarmContract.ScheduleEntry.CONTENT_URI, id);
 
                 editScheduleIntent.setData(currentScheduleUri);
 
@@ -85,7 +84,7 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
             }
         });
 
-        loaderManager.initLoader(SCHEDULE_LOADER_ID,null, this);
+        loaderManager.initLoader(SCHEDULE_LOADER_ID, null, this);
 
     }
 
@@ -96,7 +95,7 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
      * Find the respective views
      */
 
-    private void findViews(){
+    private void findViews() {
         addSchedule = findViewById(R.id.add_schedule);
         scheduleList = findViewById(R.id.schedule_list);
         emptyView = findViewById(R.id.empty_view);
@@ -108,12 +107,14 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
      * Start the editor activity
      */
 
-    private void startEditorIntent(){
+    private void startEditorIntent() {
 
         addSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editorIntent = new Intent(ScheduleActivity.this, ScheduleEditorActivity.class);
+                Intent
+                        editorIntent =
+                        new Intent(ScheduleActivity.this, ScheduleEditorActivity.class);
                 startActivity(editorIntent);
             }
         });
@@ -123,18 +124,18 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
 
     private void insertSchedule() {
         ContentValues values = new ContentValues();
-        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID,"ECON 312");
-        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME,"Microeconomics");
-        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC,"Demand");
-        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TIME,"19:00");
-        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DATE,"15/07/2020");
-        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_MILLI,"60*1000");
+        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_ID, "ECON 312");
+        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_COURSE_NAME, "Microeconomics");
+        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TOPIC, "Demand");
+        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_TIME, "19:00");
+        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DATE, "15/07/2020");
+        values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_MILLI, "60*1000");
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_REPEAT, AlarmContract.ScheduleEntry.REPEAT_OFF);
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_INTERVAL, AlarmContract.ScheduleEntry.SCHEDULE_REPEAT_DAILY);
         values.put(AlarmContract.ScheduleEntry.COLUMN_SCHEDULE_DONE, AlarmContract.ScheduleEntry.NOT_DONE);
-        Uri rowID = getContentResolver().insert(AlarmContract.ScheduleEntry.CONTENT_URI,values);
+        Uri rowID = getContentResolver().insert(AlarmContract.ScheduleEntry.CONTENT_URI, values);
 
-        Log.d("Dummy Data", ""+rowID);
+        Log.d("Dummy Data", "" + rowID);
 
 //        Toast.makeText(getApplicationContext(), "Inserted "+rowID,Toast.LENGTH_LONG).show();
     }
@@ -144,7 +145,9 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
      * Helper method to delete all schedules in the database.
      */
     private void deleteAllSchedules() {
-        int rowsDeleted = getContentResolver().delete(AlarmContract.ScheduleEntry.CONTENT_URI, null, null);
+        int
+                rowsDeleted =
+                getContentResolver().delete(AlarmContract.ScheduleEntry.CONTENT_URI, null, null);
         Log.v("CatalogActivity", rowsDeleted + " rows deleted from schedule database");
     }
 
@@ -235,9 +238,6 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
 //    }
 
 
-
-
-
     //-----------------Loader Implemented Methods---------------------------------------------------
 
     @Override
@@ -260,7 +260,7 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
                 AlarmContract.ScheduleEntry.CONTENT_URI,
                 projection,
                 null,
-                null,null);
+                null, null);
     }
 
     @Override
@@ -275,20 +275,20 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
 
     }
 
-//--------------------------Menu Options Inflater---------------------------------------------------
+    //--------------------------Menu Options Inflater---------------------------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu_schedule,menu);
+        getMenuInflater().inflate(R.menu.menu_schedule, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_delete_all_schedules:
-                deleteAllSchedules();
+                showDeleteConfirmationDialog();
                 return true;
 
             case R.id.insert_dummy_data:
@@ -303,35 +303,68 @@ public class ScheduleActivity extends AppCompatActivity implements android.app.L
 //        recreate();
 //        super.onResume();
 //    }
+
     @Override
     protected void onStart() {
-        super.onStart();
         Util.scheduleJob(this);
         AlarmStarter.init(this);
+        super.onStart();
+
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onPause();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onDestroy();
+    }
+
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.Builder and set the message, and click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_allschedules_confirmation);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the reminder.
+                deleteAllSchedules();
+
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the pet.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
 

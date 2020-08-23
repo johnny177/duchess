@@ -1,8 +1,5 @@
 package com.nnoboa.duchess.activities.editors;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
-
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -30,6 +27,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
+
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.controllers.alarm.AlarmRingTone;
@@ -44,7 +44,7 @@ import org.threeten.bp.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Objects;
 
-import static com.nnoboa.duchess.data.AlarmContract.*;
+import static com.nnoboa.duchess.data.AlarmContract.ReminderEntry;
 
 public class ReminderEditorActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -55,25 +55,15 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
 
     String reminderTime;
     String reminderDate;
-
-    private int REMINDER_LOADER_ID = 00;
-
-    private boolean mReminderHasChanged = false;
-
-    private  int type;
-
-    private int doneWithReminder;
-
-    private int repeatReminder;
-
-    private int repeatReminderInterval;
-
-    private int taskIsOnline;
-
     Uri currentReminderUri;
-
     android.app.LoaderManager loaderManager;
-
+    private int REMINDER_LOADER_ID = 00;
+    private boolean mReminderHasChanged = false;
+    private int type;
+    private int doneWithReminder;
+    private int repeatReminder;
+    private int repeatReminderInterval;
+    private int taskIsOnline;
     private View.OnTouchListener touchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -95,12 +85,12 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         findView();
 
 
-        if(currentReminderUri == null){
+        if (currentReminderUri == null) {
             getSupportActionBar().setTitle("Add a reminder");
             doneCheckBox.setEnabled(false);
-        }else{
+        } else {
             getSupportActionBar().setTitle("Edit reminder");
-            loaderManager.initLoader(REMINDER_LOADER_ID,null,this);
+            loaderManager.initLoader(REMINDER_LOADER_ID, null, this);
         }
 
         courseIdEdit.setOnTouchListener(touchListener);
@@ -117,8 +107,8 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         setupCheckers();
     }
 
-//-----------------------Custom Methods-----------------------------------------------
-    private void findView(){
+    //-----------------------Custom Methods-----------------------------------------------
+    private void findView() {
         courseIdEdit = findViewById(R.id.reminder_edit_course_id);
         courseNameEdit = findViewById(R.id.reminder_edit_course_name);
         typeSpinner = findViewById(R.id.reminder_spinner_type);
@@ -133,9 +123,9 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         locOnline = findViewById(R.id.location_text);
     }
 
-    private void setupSpinners(){
-        final ArrayAdapter typeAdapter = ArrayAdapter.createFromResource(this,R.array.reminder_type
-        ,android.R.layout.simple_spinner_item);
+    private void setupSpinners() {
+        final ArrayAdapter typeAdapter = ArrayAdapter.createFromResource(this, R.array.reminder_type
+                , android.R.layout.simple_spinner_item);
 
         typeAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
@@ -145,20 +135,20 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
-                if(!TextUtils.isEmpty(selection)){
-                    if(selection.equals(getString(R.string.lectures))){
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.lectures))) {
                         type = ReminderEntry.REMINDER_TYPE_LECTURES;
-                    }else if(selection.equals(getString(R.string.quiz))){
+                    } else if (selection.equals(getString(R.string.quiz))) {
                         type = ReminderEntry.REMINDER_TYPE_QUIZ;
-                    }else if(selection.equals(getString(R.string.project))){
+                    } else if (selection.equals(getString(R.string.project))) {
                         type = ReminderEntry.REMINDER_TYPE_PROJECT;
-                    }else if(selection.equals(getString(R.string.interim_assessment))){
+                    } else if (selection.equals(getString(R.string.interim_assessment))) {
                         type = ReminderEntry.REMINDER_TYPE_IA;
-                    }else if (selection.equals(getString(R.string.assignment))){
+                    } else if (selection.equals(getString(R.string.assignment))) {
                         type = ReminderEntry.REMINDER_TYPE_ASSIGNMENT;
-                    }else if(selection.equals(getString(R.string.exam))){
+                    } else if (selection.equals(getString(R.string.exam))) {
                         type = ReminderEntry.REMINDER_TYPE_EXAMS;
-                    }else if(selection.equals(getString(R.string.other))){
+                    } else if (selection.equals(getString(R.string.other))) {
                         type = ReminderEntry.REMINDER_TYPE_OTHER;
                     }
                 }
@@ -183,14 +173,15 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selection = (String) parent.getItemAtPosition(position);
-                if (!TextUtils.isEmpty(selection)){
-                    if(selection.equals(getString(R.string.daily))){
+                if (!TextUtils.isEmpty(selection)) {
+                    if (selection.equals(getString(R.string.daily))) {
                         repeatReminderInterval = ReminderEntry.INTERVAL_DAILY;
-                    }else if(selection.equals(getString(R.string.weekly))){
+                    } else if (selection.equals(getString(R.string.weekly))) {
                         repeatReminderInterval = ReminderEntry.INTERVAL_WEEKLY;
-                    }else if(selection.equals(getString(R.string.in_every_3_days))){
+                    } else if (selection.equals(getString(R.string.in_every_3_days))) {
                         repeatReminderInterval = ReminderEntry.INTERVAL_3_DAYS;
-                    }}else if (selection.equals(getString(R.string.once))){
+                    }
+                } else if (selection.equals(getString(R.string.once))) {
                     repeatReminderInterval = ReminderEntry.ONCE;
                 }
             }
@@ -203,10 +194,10 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         });
     }
 
-    private void setupCheckers(){
-        if(repeatCheckBox.isChecked()){
+    private void setupCheckers() {
+        if (repeatCheckBox.isChecked()) {
             repeatReminder = ReminderEntry.REMINDER_IS_REPEATING;
-        }else {
+        } else {
             repeatReminder = ReminderEntry.REMINDER_IS_NOT_REPEATING;
             repeatReminderInterval = ReminderEntry.ONCE;
             intervalSpinner.setEnabled(false);
@@ -216,9 +207,9 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         repeatCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     intervalSpinner.setEnabled(true);
-                }else {
+                } else {
                     intervalSpinner.setEnabled(false);
                     intervalSpinner.setSelection(0);
                     repeatReminder = ReminderEntry.REMINDER_IS_NOT_REPEATING;
@@ -228,26 +219,26 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
         });
 
 
-        if(doneCheckBox.isChecked()){
+        if (doneCheckBox.isChecked()) {
             doneWithReminder = ReminderEntry.STATUS_IS_DONE;
-        }else {
+        } else {
             doneWithReminder = ReminderEntry.STATUS_IS_NOT_DONE;
         }
 
 
-        if(onlineCheckBox.isChecked()){
+        if (onlineCheckBox.isChecked()) {
             taskIsOnline = ReminderEntry.REMINDER_IS_ONLINE;
-        }else{
+        } else {
             taskIsOnline = ReminderEntry.REMINDER_IS_OFFLINE;
         }
 
         onlineCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     locationEdit.setHint(R.string.type_paste_url_here);
                     locOnline.setText(R.string.url);
-                }else {
+                } else {
                     locOnline.setText(getString(R.string.location));
                     locationEdit.setHint(getString(R.string.enter_location));
                 }
@@ -310,10 +301,10 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
     /**
      * GET THE INPUT FROM THE VIEWS INTO THE DATABASE
      */
-    private void saveReminder(){
+    private void saveReminder() {
         String courseId = courseIdEdit.getText().toString().trim().toUpperCase();
         String courseName = courseNameEdit.getText().toString().trim();
-        String reminderLoc= locationEdit.getText().toString().trim();
+        String reminderLoc = locationEdit.getText().toString().trim();
         String reminderNote = noteEdit.getText().toString().trim();
         String reminderTime = timeEdit.getText().toString().trim();
         String reminderDate = dateEdit.getText().toString().trim();
@@ -322,83 +313,83 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
 
         ContentValues values = new ContentValues();
 
-        if(TextUtils.isEmpty(courseId)){
+        if (TextUtils.isEmpty(courseId)) {
             courseIdEdit.setError("Reminder requires Course ID");
-        }else{
-            values.put(ReminderEntry.COLUMN_COURSE_ID,courseId);
+        } else {
+            values.put(ReminderEntry.COLUMN_COURSE_ID, courseId);
         }
 
-        if(TextUtils.isEmpty(courseName)){
+        if (TextUtils.isEmpty(courseName)) {
             courseNameEdit.setError("Reminder requires Course Name");
-        }else {
-            values.put(ReminderEntry.COLUMN_COURSE_NAME,courseName);
+        } else {
+            values.put(ReminderEntry.COLUMN_COURSE_NAME, courseName);
         }
 
-        if(TextUtils.isEmpty(reminderTime)){
+        if (TextUtils.isEmpty(reminderTime)) {
             timeEdit.setError("Reminder requires Time");
-        }else{
-            values.put(ReminderEntry.COLUMN_REMINDER_TIME,reminderTime);
+        } else {
+            values.put(ReminderEntry.COLUMN_REMINDER_TIME, reminderTime);
         }
 
-        if(TextUtils.isEmpty(reminderDate)){
+        if (TextUtils.isEmpty(reminderDate)) {
             dateEdit.setError("Reminder requires Date");
-        }else{
-            values.put(ReminderEntry.COLUMN_REMINDER_DATE,reminderDate);
+        } else {
+            values.put(ReminderEntry.COLUMN_REMINDER_DATE, reminderDate);
         }
 
-        if(TextUtils.isEmpty(reminderLoc)){
+        if (TextUtils.isEmpty(reminderLoc)) {
             locationEdit.setError("Reminder needs a location or URL");
-        }else{
-            values.put(ReminderEntry.COLUMN_REMINDER_LOCATION,reminderLoc);
+        } else {
+            values.put(ReminderEntry.COLUMN_REMINDER_LOCATION, reminderLoc);
         }
 
-        if(repeatReminder == ReminderEntry.REMINDER_IS_NOT_REPEATING){
+        if (repeatReminder == ReminderEntry.REMINDER_IS_NOT_REPEATING) {
             values.put(ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL, ReminderEntry.ONCE);
-        }else{
-            values.put(ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL,repeatReminderInterval);
+        } else {
+            values.put(ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL, repeatReminderInterval);
         }
 
-        if(currentReminderUri == null && TextUtils.isEmpty(courseId) && TextUtils.isEmpty(courseName)
-        && TextUtils.isEmpty(reminderDate) && TextUtils.isEmpty(reminderTime)
-        && TextUtils.isEmpty(reminderLoc)){
+        if (currentReminderUri == null && TextUtils.isEmpty(courseId) && TextUtils.isEmpty(courseName)
+                && TextUtils.isEmpty(reminderDate) && TextUtils.isEmpty(reminderTime)
+                && TextUtils.isEmpty(reminderLoc)) {
             return;
         }
 
-        values.put(ReminderEntry.COLUMN_REMINDER_REPEAT,repeatReminder);
+        values.put(ReminderEntry.COLUMN_REMINDER_REPEAT, repeatReminder);
 
-        values.put(ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS,taskIsOnline);
+        values.put(ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS, taskIsOnline);
 
-        values.put(ReminderEntry.COLUMN_REMINDER_STATUS,doneWithReminder);
+        values.put(ReminderEntry.COLUMN_REMINDER_STATUS, doneWithReminder);
 
-        values.put(ReminderEntry.COLUMN_REMINDER_TYPE,type);
+        values.put(ReminderEntry.COLUMN_REMINDER_TYPE, type);
 
-        values.put(ReminderEntry.COLUMN_REMINDER_NOTE,reminderNote);
+        values.put(ReminderEntry.COLUMN_REMINDER_NOTE, reminderNote);
 
-        values.put(ReminderEntry.COLUMN_REMINDER_MILLI,Millis(reminderTime,reminderDate));
+        values.put(ReminderEntry.COLUMN_REMINDER_MILLI, Millis(reminderTime, reminderDate));
 
 
-        if(currentReminderUri == null){
+        if (currentReminderUri == null) {
             try {
-                Uri newRowId = getContentResolver().insert(ReminderEntry.CONTENT_URI,values);
-                Log.d("ReminderEditor","added "+newRowId);
-                Toast.makeText(this, "Reminder Saved "+newRowId,Toast.LENGTH_SHORT).show();
+                Uri newRowId = getContentResolver().insert(ReminderEntry.CONTENT_URI, values);
+                Log.d("ReminderEditor", "added " + newRowId);
+                Toast.makeText(this, "Reminder Saved " + newRowId, Toast.LENGTH_SHORT).show();
 
-                if (newRowId != null){
+                if (newRowId != null) {
                     finish();
-                }else{
-                    Toast.makeText(this, "Error adding new Reminder",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Error adding new Reminder", Toast.LENGTH_SHORT).show();
                 }
-            }catch (SQLException e){
-                Toast.makeText(this, "Error Adding new Reminder",Toast.LENGTH_LONG).show();
+            } catch (SQLException e) {
+                Toast.makeText(this, "Error Adding new Reminder", Toast.LENGTH_LONG).show();
             }
-        }else {
-            int rowAffected = getContentResolver().update(currentReminderUri,values,null,null);
+        } else {
+            int rowAffected = getContentResolver().update(currentReminderUri, values, null, null);
 
-            if(rowAffected != 0){
-                Toast.makeText(this,"Reminder Updated Successfully",Toast.LENGTH_LONG).show();
+            if (rowAffected != 0) {
+                Toast.makeText(this, "Reminder Updated Successfully", Toast.LENGTH_LONG).show();
                 finish();
-            }else{
-                Toast.makeText(this, "Reminder Update Failed",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Reminder Update Failed", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -408,43 +399,45 @@ public class ReminderEditorActivity extends AppCompatActivity implements android
      */
     private void deleteReminder() {
 
-        if(currentReminderUri !=null){
-            int rowDeleted = getContentResolver().delete(currentReminderUri,null,null);
+        if (currentReminderUri != null) {
+            int rowDeleted = getContentResolver().delete(currentReminderUri, null, null);
 
-            if(rowDeleted == 0){
-                Toast.makeText(getApplicationContext(),R.string.editor_delete_schedule_unsuccessful,Toast.LENGTH_SHORT).show();
+            if (rowDeleted == 0) {
+                Toast.makeText(getApplicationContext(), R.string.editor_delete_schedule_unsuccessful, Toast.LENGTH_SHORT).show();
             } else {
                 // Otherwise, the delete was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_delete_schedule_successful),
                         Toast.LENGTH_SHORT).show();
             }
-            Log.d("Editor Deleted","Row Deleted "+rowDeleted);
+            Log.d("Editor Deleted", "Row Deleted " + rowDeleted);
             finish();
         }
     }
 
 
     //-----------------------Menu Options-------------------------------------------------
-@Override
-public boolean onCreateOptionsMenu(Menu menu) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
-    if(currentReminderUri == null){
-        Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.add_reminder);
-        invalidateOptionsMenu();
+        if (currentReminderUri == null) {
+            Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.add_reminder);
+            invalidateOptionsMenu();
+        }
+        getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
     }
-    getMenuInflater().inflate(R.menu.menu_editor,menu);
-    return true;
-}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_save:
                 saveReminder();
+                AlarmStarter.init(getApplicationContext());
                 return true;
 
             case R.id.action_delete:
                 showDeleteConfirmationDialog();
+                AlarmStarter.startReminderAlarm(this);
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
@@ -474,7 +467,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if(currentReminderUri == null){
+        if (currentReminderUri == null) {
             MenuItem menuItem = menu.findItem(R.id.action_delete);
             menuItem.setVisible(false);
         }
@@ -504,27 +497,49 @@ public boolean onCreateOptionsMenu(Menu menu) {
         };
 
         return new CursorLoader(this,
-                currentReminderUri,projection,null,null,null);
+                currentReminderUri, projection, null, null, null);
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
-        if(data.moveToFirst()){
+        if (data.moveToFirst()) {
             /*
               get the column index
              */
             int courseIdColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_COURSE_ID);
-            int courseNameColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_COURSE_NAME);
-            int reminderTypeColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_TYPE);
-            int reminderTimeColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_TIME);
-            int reminderDateColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_DATE);
-            int reminderLocColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_LOCATION);
-            int reminderRepeatColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_REPEAT);
-            int reminderOnlineColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS);
-            int reminderIntervalColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL);
-            int reminderStatusColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_STATUS);
-            int reminderNoteColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_NOTE);
-            int reinderMilliColumnIndex = data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_MILLI);
+            int
+                    courseNameColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_COURSE_NAME);
+            int
+                    reminderTypeColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_TYPE);
+            int
+                    reminderTimeColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_TIME);
+            int
+                    reminderDateColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_DATE);
+            int
+                    reminderLocColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_LOCATION);
+            int
+                    reminderRepeatColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_REPEAT);
+            int
+                    reminderOnlineColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS);
+            int
+                    reminderIntervalColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL);
+            int
+                    reminderStatusColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_STATUS);
+            int
+                    reminderNoteColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_NOTE);
+            int
+                    reinderMilliColumnIndex =
+                    data.getColumnIndexOrThrow(ReminderEntry.COLUMN_REMINDER_MILLI);
 
             String courseId = data.getString(courseIdColumnIndex);
             long milli = data.getLong(reinderMilliColumnIndex);
@@ -551,7 +566,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
               match the type values with the spinner
               @param {reminderType && typeSinner}
              */
-            switch (reminderType){
+            switch (reminderType) {
                 case ReminderEntry.REMINDER_TYPE_LECTURES:
                     typeSpinner.setSelection(0);
                     break;
@@ -578,7 +593,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
               match the interval with the spinner
              */
 
-            switch (reminderRepeatInterval){
+            switch (reminderRepeatInterval) {
                 case ReminderEntry.INTERVAL_DAILY:
                     intervalSpinner.setSelection(1);
                     break;
@@ -596,9 +611,9 @@ public boolean onCreateOptionsMenu(Menu menu) {
             /*
               match the repeat checker
              */
-            if(reminderRepeatStat == ReminderEntry.REMINDER_IS_REPEATING){
+            if (reminderRepeatStat == ReminderEntry.REMINDER_IS_REPEATING) {
                 repeatCheckBox.setChecked(true);
-            }else {
+            } else {
                 repeatCheckBox.setChecked(false);
             }
 
@@ -606,9 +621,9 @@ public boolean onCreateOptionsMenu(Menu menu) {
               match the online checker
              */
 
-            if (reminderOnlineStatus == ReminderEntry.REMINDER_IS_ONLINE){
+            if (reminderOnlineStatus == ReminderEntry.REMINDER_IS_ONLINE) {
                 onlineCheckBox.setChecked(true);
-            }else{
+            } else {
                 onlineCheckBox.setChecked(false);
             }
 
@@ -616,9 +631,9 @@ public boolean onCreateOptionsMenu(Menu menu) {
               match the reminder status
              */
 
-            if(reminderStatus == ReminderEntry.STATUS_IS_DONE){
+            if (reminderStatus == ReminderEntry.STATUS_IS_DONE) {
                 doneCheckBox.setChecked(true);
-            }else {
+            } else {
                 doneCheckBox.setChecked(false);
             }
 
@@ -641,7 +656,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
         locationEdit.setText("");
     }
 
-    public void DateDialog(View view){
+    public void DateDialog(View view) {
         Calendar calendar = Calendar.getInstance();
 
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -649,25 +664,27 @@ public boolean onCreateOptionsMenu(Menu menu) {
         int year = calendar.get(Calendar.YEAR);
 
         //launching the date dialog
-        DatePickerDialog datePickerDialog = new DatePickerDialog(ReminderEditorActivity.this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
-                if (month < 10 & dayOfMonth > 10) {
-                    String nDate = year + "/0" + (month + 1) + "/" + dayOfMonth;
-                    dateEdit.setText(nDate);
-                } else if (dayOfMonth < 10 & month > 10) {
-                    String nDate = year + "/" + (month + 1) + "/0" + dayOfMonth;
-                    dateEdit.setText(nDate);
-                } else if (month < 10 & dayOfMonth < 10) {
-                    String nDate = year + "/0" + (month + 1) + "/0" + dayOfMonth;
-                    dateEdit.setText(nDate);
-                } else {
-                    String nDate = year + "/" + (month + 1) + "/" + dayOfMonth;
-                    dateEdit.setText(nDate);
-                }
-            }
+        DatePickerDialog
+                datePickerDialog =
+                new DatePickerDialog(ReminderEditorActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
+                        if (month < 10 & dayOfMonth > 10) {
+                            String nDate = year + "/0" + (month + 1) + "/" + dayOfMonth;
+                            dateEdit.setText(nDate);
+                        } else if (dayOfMonth < 10 & month > 10) {
+                            String nDate = year + "/" + (month + 1) + "/0" + dayOfMonth;
+                            dateEdit.setText(nDate);
+                        } else if (month < 10 & dayOfMonth < 10) {
+                            String nDate = year + "/0" + (month + 1) + "/0" + dayOfMonth;
+                            dateEdit.setText(nDate);
+                        } else {
+                            String nDate = year + "/" + (month + 1) + "/" + dayOfMonth;
+                            dateEdit.setText(nDate);
+                        }
+                    }
 
-        },year,month,day);
+                }, year, month, day);
         datePickerDialog.show();
     }
 
@@ -678,64 +695,70 @@ public boolean onCreateOptionsMenu(Menu menu) {
         int Minute = calendar.get(Calendar.MINUTE);
 
         //launching the timepicker dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(ReminderEditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
+        TimePickerDialog
+                timePickerDialog =
+                new TimePickerDialog(ReminderEditorActivity.this, new TimePickerDialog.OnTimeSetListener() {
 
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                if (hourOfDay < 10 && minute > 10) {
-                    String mTime = "0" + hourOfDay + ":" + minute;
-                    timeEdit.setText(mTime);
-                } else if (hourOfDay > 10 && minute < 10) {
-                    String mTime = hourOfDay + ":0" + minute;
-                    timeEdit.setText(mTime);
-                } else if (hourOfDay < 10 && minute < 10) {
-                    String mTime = "0" + hourOfDay + ":0" + minute;
-                    timeEdit.setText(mTime);
-                } else if(hourOfDay>0 && minute >0){
-                    String mTime = hourOfDay + ":" + minute;
-                    timeEdit.setText(mTime);
-                }
-            }
-        }, Hour, Minute, true);
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if (hourOfDay < 10 && minute > 10) {
+                            String mTime = "0" + hourOfDay + ":" + minute;
+                            timeEdit.setText(mTime);
+                        } else if (hourOfDay > 10 && minute < 10) {
+                            String mTime = hourOfDay + ":0" + minute;
+                            timeEdit.setText(mTime);
+                        } else if (hourOfDay < 10 && minute < 10) {
+                            String mTime = "0" + hourOfDay + ":0" + minute;
+                            timeEdit.setText(mTime);
+                        } else if (hourOfDay > 0 && minute > 0) {
+                            String mTime = hourOfDay + ":" + minute;
+                            timeEdit.setText(mTime);
+                        }
+                    }
+                }, Hour, Minute, true);
 
         timePickerDialog.show();
     }
 
-    public long Millis(String time,String date){
+    public long Millis(String time, String date) {
         long milli;
-        try{
-            String DateTime = date+" 0"+time+":00";
+        try {
+            String DateTime = date + " 0" + time + ":00";
 
 
 //        DateTime = DateTime.replace(" ","T").replace("/","-");
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            DateTimeFormatter
+                    dateTimeFormatter =
+                    DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
 
             ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
             OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
 
             milli = offsetDateTime.toInstant().toEpochMilli();
-            Log.i("Millis"," "+milli);}
-        catch (org.threeten.bp.format.DateTimeParseException e ){
-            String DateTime = date+" "+time+":00";
+            Log.i("Millis", " " + milli);
+        } catch (org.threeten.bp.format.DateTimeParseException e) {
+            String DateTime = date + " " + time + ":00";
 
 
 //        DateTime = DateTime.replace(" ","T").replace("/","-");
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            DateTimeFormatter
+                    dateTimeFormatter =
+                    DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
             LocalDateTime localDateTime = LocalDateTime.parse(DateTime, dateTimeFormatter);
 
             ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
             OffsetDateTime offsetDateTime = zonedDateTime.toOffsetDateTime();
 
             milli = offsetDateTime.toInstant().toEpochMilli();
-            Log.i("Millis"," "+milli);
+            Log.i("Millis", " " + milli);
         }
         return milli;
     }
 
     @Override
     protected void onStart() {
-        if(AlarmRingTone.isplayingAudio==true){
+        if (AlarmRingTone.isplayingAudio == true) {
             AlarmRingTone.stopAudio();
         }
         super.onStart();
@@ -744,7 +767,7 @@ public boolean onCreateOptionsMenu(Menu menu) {
     @Override
     protected void onResume() {
         super.onResume();
-        if (AlarmRingTone.isplayingAudio == true){
+        if (AlarmRingTone.isplayingAudio == true) {
             AlarmRingTone.stopAudio();
         }
         AlarmStarter.init(this);

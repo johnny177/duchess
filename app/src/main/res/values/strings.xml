@@ -99,6 +99,7 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="delete_all_confirmation"><![CDATA[Are you sure you want to clear all your <b>Reminders</b>?]]></string>
+    <string name="delete_all_confirmation"><![CDATA["Are you sure you want to clear all your Reminders?"]]></string>
+    <string name="delete_allschedules_confirmation"> Are you sure You want to Delete All Schedules ?</string>
 
 </resources>

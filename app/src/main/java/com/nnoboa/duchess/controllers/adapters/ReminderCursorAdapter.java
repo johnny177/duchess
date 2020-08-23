@@ -50,18 +50,42 @@ public class ReminderCursorAdapter extends CursorAdapter {
               get the column index
              */
 
-        int courseIdColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_COURSE_ID);
-        int courseNameColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_COURSE_NAME);
-        int reminderTypeColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_TYPE);
-        int reminderTimeColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_TIME);
-        int reminderDateColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE);
-        int reminderLocColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_LOCATION);
-        int reminderRepeatColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT);
-        int reminderOnlineColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS);
-        int reminderIntervalColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL);
-        int reminderStatusColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_STATUS);
-        int reminderNoteColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_NOTE);
-        int reminderMilliColumnIndex = data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_MILLI);
+        int
+                courseIdColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_COURSE_ID);
+        int
+                courseNameColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_COURSE_NAME);
+        int
+                reminderTypeColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_TYPE);
+        int
+                reminderTimeColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_TIME);
+        int
+                reminderDateColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_DATE);
+        int
+                reminderLocColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_LOCATION);
+        int
+                reminderRepeatColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT);
+        int
+                reminderOnlineColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_ONLINE_STATUS);
+        int
+                reminderIntervalColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_REPEAT_INTERVAL);
+        int
+                reminderStatusColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_STATUS);
+        int
+                reminderNoteColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_NOTE);
+        int
+                reminderMilliColumnIndex =
+                data.getColumnIndexOrThrow(AlarmContract.ReminderEntry.COLUMN_REMINDER_MILLI);
 
         String courseId = data.getString(courseIdColumnIndex);
         String courseName = data.getString(courseNameColumnIndex);
@@ -83,7 +107,7 @@ public class ReminderCursorAdapter extends CursorAdapter {
         timeText.setText(reminderTime);
         dateText.setText(reminderDate);
 
-        switch (reminderRepeatInterval){
+        switch (reminderRepeatInterval) {
             case AlarmContract.ReminderEntry.ONCE:
                 intervalText.setText(R.string.once);
                 break;
@@ -98,7 +122,7 @@ public class ReminderCursorAdapter extends CursorAdapter {
                 break;
         }
 
-        switch (reminderOnlineStatus){
+        switch (reminderOnlineStatus) {
             case AlarmContract.ReminderEntry.REMINDER_IS_ONLINE:
                 link.setVisibility(View.VISIBLE);
                 link.setText(reminderLoc);
@@ -109,7 +133,7 @@ public class ReminderCursorAdapter extends CursorAdapter {
                 break;
         }
 
-        switch (reminderType){
+        switch (reminderType) {
             case AlarmContract.ReminderEntry.REMINDER_TYPE_LECTURES:
                 typeText.setText(R.string.lectures);
                 break;
@@ -133,7 +157,7 @@ public class ReminderCursorAdapter extends CursorAdapter {
                 break;
         }
 
-        switch (reminderStatus){
+        switch (reminderStatus) {
             case AlarmContract.ReminderEntry.STATUS_IS_DONE:
                 cardView.setCardBackgroundColor(android.R.color.background_dark);
                 break;
@@ -145,7 +169,7 @@ public class ReminderCursorAdapter extends CursorAdapter {
         link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openLink(reminderLoc,context);
+                openLink(reminderLoc, context);
             }
         });
 
@@ -185,11 +209,10 @@ public class ReminderCursorAdapter extends CursorAdapter {
         }
 
 
-
     }
 
-    public void openLink(String url, Context context){
-        if (!url.startsWith("https://") && !url.startsWith("http://")){
+    public void openLink(String url, Context context) {
+        if (!url.startsWith("https://") && !url.startsWith("http://")) {
             url = "http://" + url;
         }
         Intent openUrlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

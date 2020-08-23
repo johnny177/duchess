@@ -1,10 +1,14 @@
 package com.nnoboa.duchess;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,7 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jakewharton.threetenabp.AndroidThreeTen;
-import com.nnoboa.duchess.activities.PDFActivity;
+import com.nnoboa.duchess.controllers.ThemeUtils;
 import com.nnoboa.duchess.controllers.alarm.AlarmStarter;
 import com.nnoboa.duchess.controllers.alarm.Util;
 import com.nnoboa.duchess.fragments.AlarmFragment;
@@ -26,39 +30,9 @@ import com.nnoboa.duchess.fragments.WebFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    Context context;
     public static int REQUEST_PERMISSIONS = 1;
+    Context context;
     boolean boolean_permission;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        AndroidThreeTen.init(this);
-        this.context = this;
-
-        AlarmStarter.init(context);
-
-        Util.scheduleJob(this);
-        fn_permission();
-
-
-//        QueryDb();
-
-
-        //find the bottom navigation from the xml
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
-
-        //check if the savedState is null and set the alarm Frag as the home frag
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new AlarmFragment()).commit();
-        }
-    }
-
-
     private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -86,36 +60,104 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
+    @SuppressLint("ResourceAsColor")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        ThemeUtils.onActivityCreateSetTheme(this);
+        setContentView(R.layout.activity_main);
+        AndroidThreeTen.init(this);
+        this.context = this;
+
+        AlarmStarter.init(context);
+
+        Util.scheduleJob(this);
+        fn_permission();
+
+
+//        QueryDb();
+
+
+        //find the bottom navigation from the xml
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        int selected = Integer.parseInt(preferences.getString("theme", "1"));
+        switch (selected) {
+            case ThemeUtils.DARK_THEME:
+                bottomNavigationView.setItemTextColor(ColorStateList.valueOf(R.color.colorPrimaryDarkTheme));
+                break;
+            case ThemeUtils.DEFAULT_THEME:
+                bottomNavigationView.setItemTextColor(ColorStateList.valueOf(R.color.colorPrimaryDark));
+                break;
+        }
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
+
+        //check if the savedState is null and set the alarm Frag as the home frag
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new AlarmFragment()).commit();
+        }
+    }
+
     @Override
     protected void onStart() {
-        super.onStart();
         Util.scheduleJob(this);
         AlarmStarter.init(this);
+        super.onStart();
+
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onPause();
     }
 
     @Override
     protected void onResume() {
-        super.onResume();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onDestroy();
     }
+
+    @Override
+    public boolean onNavigateUp() {
+        AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        return super.onNavigateUp();
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onUserLeaveHint();
+    }
+
+    @Override
+    protected void onPostResume() {
+        AlarmStarter.init(this);
+        Util.scheduleJob(this);
+        super.onPostResume();
+    }
+
 
     private void fn_permission() {
         if ((ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
@@ -137,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.settings:
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);

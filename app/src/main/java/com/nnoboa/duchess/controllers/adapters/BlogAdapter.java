@@ -3,7 +3,6 @@ package com.nnoboa.duchess.controllers.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,28 +15,23 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.nnoboa.duchess.R;
 import com.nnoboa.duchess.controllers.blog.BlogItems;
 
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.OffsetDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
-
 import java.util.ArrayList;
 import java.util.Random;
 
-public class BlogAdapter  extends ArrayAdapter<BlogItems> {
+public class BlogAdapter extends ArrayAdapter<BlogItems> {
     public BlogAdapter(@NonNull Context context, ArrayList<BlogItems> blogItems) {
-        super(context, 0,blogItems);
+        super(context, 0, blogItems);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         View blogView = convertView;
 
         AndroidThreeTen.init(getContext());
 
-        if(blogView == null){
-            blogView = LayoutInflater.from(parent.getContext()).inflate(R.layout.blog, parent, false);
+        if (blogView == null) {
+            blogView =
+                    LayoutInflater.from(parent.getContext()).inflate(R.layout.blog, parent, false);
         }
 
         BlogItems blogItems = getItem(position);
@@ -47,7 +41,7 @@ public class BlogAdapter  extends ArrayAdapter<BlogItems> {
         TextView title = blogView.findViewById(R.id.title);
         TextView time = blogView.findViewById(R.id.time);
 
-        authCred.setText(blogItems.getmAuthor().substring(0,1));
+        authCred.setText(blogItems.getmAuthor().substring(0, 1));
         author.setText(blogItems.getmAuthor());
         title.setText(blogItems.getmTitle());
         time.setText(formatString(blogItems.getmDatePublished()));
@@ -61,14 +55,14 @@ public class BlogAdapter  extends ArrayAdapter<BlogItems> {
         return blogView;
     }
 
-    private int getRandomColor(){
+    private int getRandomColor() {
         Random random = new Random();
-        return Color.argb(180, random.nextInt(200),random.nextInt(210),random.nextInt(250));
+        return Color.argb(180, random.nextInt(200), random.nextInt(210), random.nextInt(250));
     }
 
-    private String formatString(String time){
+    private String formatString(String time) {
         int last = time.indexOf("T");
-        time = time.substring(0,last);
+        time = time.substring(0, last);
         return time;
     }
 

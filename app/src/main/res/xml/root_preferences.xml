@@ -3,29 +3,25 @@
 
     <PreferenceCategory app:title="General Settings">
 
-        <SwitchPreference
-            app:key="general_ringtone_check"
-            android:title="Set General Ringtone"
-            app:defaultValue="true"
-            app:useSimpleSummaryProvider="true"/>
+<!--        <SwitchPreference-->
+<!--            app:key="general_ringtone_check"-->
+<!--            android:title="Set General Ringtone"-->
+<!--            app:defaultValue="true"-->
+<!--            app:useSimpleSummaryProvider="true"/>-->
 
         <Preference
-            android:dependency="general_ringtone_check"
             app:key="general_ringtone"
-            app:title="Ringtone"
+            app:title="Set Notification Ringtone"
             app:useSimpleSummaryProvider="true"
             app:defaultValue="None"
             />
 
 
         <DropDownPreference
-            android:title="Theme"
-            app:key="theme"
-            app:useSimpleSummaryProvider="true"
-            app:defaultValue="Default"/>
-        <DropDownPreference
             app:title="Font Family"
             app:key="font_family"
+            app:entries="@array/preloaded_fonts"
+            android:entryValues="@array/preloaded_fonts"
             app:defaultValue="Default Font Type"
             app:useSimpleSummaryProvider="true"/>
 
@@ -40,24 +36,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="Alarm Settings">
-        <EditTextPreference
-            app:key="reminder_ringtone"
-            app:title="Select your preferred Ringtone"
-            app:useSimpleSummaryProvider="true" />
-        <DropDownPreference
-            android:title="Reminder Theme"
-            app:key="reminder_theme"
-            app:useSimpleSummaryProvider="true"
-            app:defaultValue="Default Theme"/>
-        <EditTextPreference
-            app:key="schedule_ringtone"
-            app:title="Select your preferred Ringtone"
-            app:useSimpleSummaryProvider="true" />
-        <DropDownPreference
-            android:title="Schedule Theme"
-            app:key="schedule_theme"
-            app:useSimpleSummaryProvider="true"
-            app:defaultValue="Default Theme"/>
+
 
     </PreferenceCategory>
 
